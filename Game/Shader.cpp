@@ -2,9 +2,6 @@
 
 Shader::Shader(const char* vertexPath, const char* fragmentPath)
 {
-    std::cout << "vertexpath: " << vertexPath << std::endl;
-    std::cout << "fragmentpath: " << fragmentPath << std::endl;
-
     // Get the source code from file path.
     std::string vertexCode;
     std::string fragmentCode;
@@ -32,7 +29,7 @@ Shader::Shader(const char* vertexPath, const char* fragmentPath)
     }
     catch(std::ifstream::failure e)
     {
-        std::cout << "Shader file not successfully read!" << e.what() << std::endl;
+        std::cerr << "Shader file not successfully read!" << e.what() << std::endl;
     }
 
     const char* vertexShaderCode = vertexCode.c_str();
@@ -108,7 +105,11 @@ void Shader::SetFloat(const std::string &name, float value) const
 { 
     glUniform1f(glGetUniformLocation(ID, name.c_str()), value); 
 }
-void Shader::SetVec3(const std::string &name, float x, float y, float z) const
+void Shader::SetVec3(const std::string &name, const glm::vec3 &value) const
 { 
-    glUniform3f(glGetUniformLocation(ID, name.c_str()), x, y, z); 
+    glUniform3fv(glGetUniformLocation(ID, name.c_str()), 1, &value[0]); 
+}
+void Shader::SetMat4(const std::string &name, const glm::mat4 &mat) const
+{ 
+    glUniformMatrix4fv(glGetUniformLocation(ID, name.c_str()), 1, GL_FALSE, &mat[0][0]);
 }

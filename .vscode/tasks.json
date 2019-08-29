@@ -22,6 +22,8 @@
                 "${workspaceFolder}\\Game\\Shader.h",
                 "${workspaceFolder}\\Game\\Shader.cpp",
                 "${workspaceFolder}\\Game\\stb_image.h",
+                "${workspaceFolder}\\Game\\Model.h",
+                "${workspaceFolder}\\Game\\Model.cpp",
                 "-lglfw3",
                 "-lopengl32",
                 "-lgdi32",

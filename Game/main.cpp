@@ -16,6 +16,7 @@
 
 // Own includes
 #include "Shader.h"
+#include "Model.h"
 
 
 // Global variables
@@ -58,7 +59,10 @@ int main()
     glfwSetFramebufferSizeCallback(window, FramebufferSizeCallback); 
 
     // Shaders
+    Shader backgroundShader("C:/Users/teemu.turku/Documents/GitHub/GLJRPG/Game/Shaders/Background.vs", "C:/Users/teemu.turku/Documents/GitHub/GLJRPG/Game/Shaders/Background.fs");
     Shader unlitShader("C:/Users/teemu.turku/Documents/GitHub/GLJRPG/Game/Shaders/Unlit.vs", "C:/Users/teemu.turku/Documents/GitHub/GLJRPG/Game/Shaders/Unlit.fs");
+
+    Model cube("C:/Users/teemu.turku/Documents/GitHub/GLJRPG/Game/Models/Cube/box.obj");
 
     // -1, -1, 0 is bottom left of screen and 1, 1, 0 is top right of screen.
     // Triangle
@@ -70,6 +74,7 @@ int main()
         -1.0f, -1.0f, 0.0f, 0.0f, 0.0f,   // bottom left
         -1.0f,  1.0f, 0.0f, 0.0f, 1.0f    // top left 
     };
+    
     // How to draw the vertices
     unsigned int indices[] = 
     {  
@@ -145,7 +150,8 @@ int main()
     // Free image memory
     stbi_image_free(data);
 
-    unlitShader.Use();
+    // Enable depth test
+    glEnable(GL_DEPTH_TEST);
 
     // Main loop
     while(!glfwWindowShouldClose(window))
@@ -155,11 +161,26 @@ int main()
 
         // Rendering
         glClearColor(0.1f, 0.2f, 0.35f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+        backgroundShader.Use();
         glBindTexture(GL_TEXTURE_2D, texture);
 
         glBindVertexArray(VAO);
+        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+
+        unlitShader.Use();
+        // Create transformations
+        glm::mat4 model = glm::mat4(1.0f);
+        glm::mat4 view = glm::mat4(1.0f);
+        glm::mat4 projection = glm::mat4(1.0f);
+        model = glm::rotate(model, glm::radians(-55.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+        view  = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f));
+        projection = glm::perspective(glm::radians(45.0f), (float)SCREENWIDTH / (float)SCREENHEIGHT, 0.1f, 100.0f);
+
+        unlitShader.SetMat4("model", model);
+        unlitShader.SetMat4("view", view);
+        unlitShader.SetMat4("projection", projection);
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
         // Check and call events and swap buffers
