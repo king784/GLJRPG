@@ -5,12 +5,18 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
-// Own includes
-#include "Shader.h"
+// OpenGL Mathematics includes
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 // Single header image loading library by Sean Barrett
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
+
+// Own includes
+#include "Shader.h"
+
 
 // Global variables
 const unsigned int SCREENWIDTH = 800;
@@ -58,19 +64,30 @@ int main()
     // Triangle
     float vertices[] = 
     {
-    -1.0f, -1.0f, 0.0f,
-     0.5f, -1.5f, 0.0f,
-     0.0f,  0.5f, 0.0f
-    };  
+        // positions        // texture coords
+        1.0f,  1.0f, 0.0f, 1.0f, 1.0f,   // top right
+        1.0f, -1.0f, 0.0f, 1.0f, 0.0f,   // bottom right
+        -1.0f, -1.0f, 0.0f, 0.0f, 0.0f,   // bottom left
+        -1.0f,  1.0f, 0.0f, 0.0f, 1.0f    // top left 
+    };
+    // How to draw the vertices
+    unsigned int indices[] = 
+    {  
+        0, 1, 3, // first triangle
+        1, 2, 3  // second triangle
+    };
 
     // Create memory on the GPU, where we want to store the vertex data by using Vertex Buffer Objects(VBO).
     // We can send a lot of data to the GPU at once using these buffers.
     // Once the data has been sent to GPU, it has almost instant access to the vertices, making the rendering fast.
     // Vertex Array Object can also be bound like VBO. VAO has an advantage that when configuring vertex attribute pointers you only
     // have to make those calls once and when we want to draw an object, we can just bind the corresponding VAO.
-    unsigned int VBO, VAO;
+    // Element Buffer Objects let us use previously defined vertices to draw shapes so we don't need to define the same
+    // vertices twice.
+    unsigned int VBO, VAO, EBO;
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);
+    glGenBuffers(1, &EBO);
 
     // Bind vertex array
     glBindVertexArray(VAO);
@@ -78,14 +95,55 @@ int main()
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+
+    // Positions
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
+
+    // Texture coordinates
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+    glEnableVertexAttribArray(1);
 
     // Unbind buffer
     glBindBuffer(GL_ARRAY_BUFFER, 0); 
 
     // Unbind VAO after so VAO calls won't accidentally modify this VAO.
     glBindVertexArray(0);
+
+    // Load images correct side up
+    stbi_set_flip_vertically_on_load(true);  
+
+    // Generate texture from image
+    unsigned int texture;
+    glGenTextures(1, &texture);
+
+    // Bind texture so we can generate the texture using image data
+    glBindTexture(GL_TEXTURE_2D, texture);
+
+    // Set texture wrapping and filtering options on bound object
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);	
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+    // Image loading
+    int width, height, nrChannels;
+    unsigned char* data = stbi_load("C:/Users/teemu.turku/Documents/GitHub/GLJRPG/Game/Images/Background.png", &width, &height, &nrChannels, 0);
+
+    if(data)
+    {
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+        glGenerateMipmap(GL_TEXTURE_2D);
+    }
+    else
+    {
+        std::cout << "Failed to load texture!" << std::endl;
+    }   
+
+    // Free image memory
+    stbi_image_free(data);
 
     unlitShader.Use();
 
@@ -99,13 +157,20 @@ int main()
         glClearColor(0.1f, 0.2f, 0.35f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
+        glBindTexture(GL_TEXTURE_2D, texture);
+
         glBindVertexArray(VAO);
-        glDrawArrays(GL_TRIANGLES, 0, 3);
+        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
         // Check and call events and swap buffers
-        glfwPollEvents();  
-        glfwSwapBuffers(window);  
+        glfwSwapBuffers(window); 
+        glfwPollEvents();   
     }
+
+    // De-allocate resources
+    glDeleteVertexArrays(1, &VAO);
+    glDeleteBuffers(1, &VBO);
+    glDeleteBuffers(1, &EBO);
 
     // Clean GLFW resources that were allocated.
     glfwTerminate();
