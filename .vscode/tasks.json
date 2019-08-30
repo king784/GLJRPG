@@ -24,6 +24,8 @@
                 "${workspaceFolder}\\Game\\stb_image.h",
                 "${workspaceFolder}\\Game\\Model.h",
                 "${workspaceFolder}\\Game\\Model.cpp",
+                "${workspaceFolder}\\Game\\Camera.h",
+                "${workspaceFolder}\\Game\\Camera.cpp",
                 "-lglfw3",
                 "-lopengl32",
                 "-lgdi32",

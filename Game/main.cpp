@@ -17,11 +17,13 @@
 // Own includes
 #include "Shader.h"
 #include "Model.h"
+#include "Camera.h"
 
 
 // Global variables
 const unsigned int SCREENWIDTH = 800;
 const unsigned int SCREENHEIGHT = 600;
+Camera mainCamera();
 
 // Function prototypes
 void FramebufferSizeCallback(GLFWwindow* window, int width, int height);
@@ -167,19 +169,20 @@ int main()
         glBindTexture(GL_TEXTURE_2D, texture);
 
         glBindVertexArray(VAO);
-        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+        // glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
         unlitShader.Use();
         // Create transformations
         glm::mat4 model = glm::mat4(1.0f);
-        glm::mat4 view = glm::mat4(1.0f);
         glm::mat4 projection = glm::mat4(1.0f);
-        model = glm::rotate(model, glm::radians(-55.0f), glm::vec3(1.0f, 0.0f, 0.0f));
-        view  = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f));
-        projection = glm::perspective(glm::radians(45.0f), (float)SCREENWIDTH / (float)SCREENHEIGHT, 0.1f, 100.0f);
+        model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+        model = glm::rotate(model, glm::radians(-45.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+        model = glm::scale(model, glm::vec3(50.0f, 50.0f, 50.0f));
+        //view  = glm::translate(view, glm::vec3(0.0f, -2.0f, 2.0f));
+        //projection = glm::perspective(glm::radians(45.0f), (float)SCREENWIDTH / (float)SCREENHEIGHT, 0.1f, 100.0f);
 
-        unlitShader.SetMat4("model", model);
-        unlitShader.SetMat4("view", view);
+        //unlitShader.SetMat4("model", model);
+        //unlitShader.SetMat4("view", view);
         unlitShader.SetMat4("projection", projection);
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
@@ -211,5 +214,12 @@ void ProcessInput(GLFWwindow* window)
     if(glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
     {
         glfwSetWindowShouldClose(window, true);
+    }
+
+    // Debug Movement for moving the camera
+    float cameraSpeed = 0.05f;
+    if(glfwGetKey(window, GLFW_KEY_I) == GLFW_PRESS)
+    {
+        cameraPos +=
     }
 }
