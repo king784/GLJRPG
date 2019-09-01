@@ -61,10 +61,14 @@ int main()
     glfwSetFramebufferSizeCallback(window, FramebufferSizeCallback); 
 
     // Shaders
-    Shader backgroundShader("C:/Users/teemu.turku/Documents/GitHub/GLJRPG/Game/Shaders/Background.vs", "C:/Users/teemu.turku/Documents/GitHub/GLJRPG/Game/Shaders/Background.fs");
-    Shader unlitShader("C:/Users/teemu.turku/Documents/GitHub/GLJRPG/Game/Shaders/Unlit.vs", "C:/Users/teemu.turku/Documents/GitHub/GLJRPG/Game/Shaders/Unlit.fs");
 
-    Model cube("C:/Users/teemu.turku/Documents/GitHub/GLJRPG/Game/Models/Cube/box.obj");
+    // Path at school: C:/Users/teemu.turku/Documents/GitHub/GLJRPG
+    // at home: D:/Projects/OpenGL/GLJRPG
+    std::string pathToRoot = "D:/Projects/OpenGL/GLJRPG"; 
+    Shader backgroundShader((pathToRoot + "/Game/Shaders/Background.vs").c_str(), (pathToRoot + "/Game/Shaders/Background.fs").c_str());
+    Shader unlitShader((pathToRoot + "/Game/Shaders/Unlit.vs").c_str(), (pathToRoot + "/Game/Shaders/Unlit.fs").c_str());
+
+    Model cube((pathToRoot + "/Game/Models/Cube/box.obj").c_str());
 
     // -1, -1, 0 is bottom left of screen and 1, 1, 0 is top right of screen.
     // Triangle
@@ -220,6 +224,6 @@ void ProcessInput(GLFWwindow* window)
     float cameraSpeed = 0.05f;
     if(glfwGetKey(window, GLFW_KEY_I) == GLFW_PRESS)
     {
-        cameraPos +=
+        //cameraPos +=
     }
 }
