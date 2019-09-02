@@ -6,10 +6,24 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+// My includes
+#include "Enums.h"
+
 class Camera
 {
 public:
-   Camera(int& screenWidth, int& screenHeight);
+   Camera(const int& screenWidth, const int& screenHeight);
+
+    // Getters and setters
+    glm::vec3 GetCameraPos();
+    glm::vec3 GetCameraTarget();
+    glm::vec3 GetCameraUp();
+    glm::vec3 GetCameraRight();
+    glm::mat4 GetView();
+    glm::mat4 GetProjection();
+
+    void SetCameraPos(glm::vec3 newPos);
+    void MoveCamera(Direction dir);
 private:
     // Current camera position
     glm::vec3 cameraPos;
@@ -33,6 +47,9 @@ private:
     // target position and world vector up.
     glm::mat4 view;
     glm::mat4 projection;
+
+    // Speed of camera
+    float cameraSpeed = 0.1f;
 };
   
 #endif

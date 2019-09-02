@@ -18,12 +18,13 @@
 #include "Shader.h"
 #include "Model.h"
 #include "Camera.h"
+#include "Enums.h"
 
 
 // Global variables
 const unsigned int SCREENWIDTH = 800;
 const unsigned int SCREENHEIGHT = 600;
-Camera mainCamera();
+Camera mainCamera(SCREENWIDTH, SCREENHEIGHT);
 
 // Function prototypes
 void FramebufferSizeCallback(GLFWwindow* window, int width, int height);
@@ -64,7 +65,7 @@ int main()
 
     // Path at school: C:/Users/teemu.turku/Documents/GitHub/GLJRPG
     // at home: D:/Projects/OpenGL/GLJRPG
-    std::string pathToRoot = "D:/Projects/OpenGL/GLJRPG"; 
+    std::string pathToRoot = "C:/Users/teemu.turku/Documents/GitHub/GLJRPG"; 
     Shader backgroundShader((pathToRoot + "/Game/Shaders/Background.vs").c_str(), (pathToRoot + "/Game/Shaders/Background.fs").c_str());
     Shader unlitShader((pathToRoot + "/Game/Shaders/Unlit.vs").c_str(), (pathToRoot + "/Game/Shaders/Unlit.fs").c_str());
 
@@ -178,16 +179,14 @@ int main()
         unlitShader.Use();
         // Create transformations
         glm::mat4 model = glm::mat4(1.0f);
-        glm::mat4 projection = glm::mat4(1.0f);
-        model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
-        model = glm::rotate(model, glm::radians(-45.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-        model = glm::scale(model, glm::vec3(50.0f, 50.0f, 50.0f));
+        //model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+        model = glm::scale(model, glm::vec3(40.0f, 1.0f, 40.0f));
         //view  = glm::translate(view, glm::vec3(0.0f, -2.0f, 2.0f));
         //projection = glm::perspective(glm::radians(45.0f), (float)SCREENWIDTH / (float)SCREENHEIGHT, 0.1f, 100.0f);
 
-        //unlitShader.SetMat4("model", model);
-        //unlitShader.SetMat4("view", view);
-        unlitShader.SetMat4("projection", projection);
+        unlitShader.SetMat4("model", model);
+        unlitShader.SetMat4("view", mainCamera.GetView());
+        unlitShader.SetMat4("projection", mainCamera.GetProjection());
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
         // Check and call events and swap buffers
@@ -221,9 +220,20 @@ void ProcessInput(GLFWwindow* window)
     }
 
     // Debug Movement for moving the camera
-    float cameraSpeed = 0.05f;
     if(glfwGetKey(window, GLFW_KEY_I) == GLFW_PRESS)
     {
-        //cameraPos +=
+        mainCamera.MoveCamera(Direction::Forward);
+    }
+    if(glfwGetKey(window, GLFW_KEY_L) == GLFW_PRESS)
+    {
+        mainCamera.MoveCamera(Direction::Right);
+    }
+    if(glfwGetKey(window, GLFW_KEY_K) == GLFW_PRESS)
+    {
+        mainCamera.MoveCamera(Direction::Back);
+    }
+    if(glfwGetKey(window, GLFW_KEY_J) == GLFW_PRESS)
+    {
+        mainCamera.MoveCamera(Direction::Left);
     }
 }
