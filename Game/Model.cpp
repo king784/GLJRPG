@@ -102,6 +102,7 @@ void Model::Draw(Shader& shader)
     // glActiveTexture(GL_TEXTURE0);
 
     // draw mesh
+    shader.Use();
     glBindVertexArray(VAO);
     glDrawElements(GL_TRIANGLES, vertexIndices.size(), GL_UNSIGNED_INT, 0);
     glBindVertexArray(0);
