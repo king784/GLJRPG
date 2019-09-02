@@ -48,6 +48,8 @@ Model::Model(const char* modelPath)
             // Elements are formatted this way in the obj file:
             // 1/8/6 4/20/6 6/15/6
             // That is why we need to read a number, then discard the slash. 
+            // Also we need to substact 1 from the numbers, because indices are
+            // range[1, 8] in obj files but OpenGL expects it to be range[0, 7].
             else if (line.substr(0,2) == "f ")
             {
                 std::istringstream s(line.substr(2));
@@ -59,6 +61,9 @@ Model::Model(const char* modelPath)
                     s >> b; 
                     s.ignore(1);
                     s >> c;
+                    a--;
+                    b--;
+                    c--;
                     vertexIndices.push_back(a); uvIndices.push_back(b); normalIndices.push_back(c);
                 }
             }
@@ -72,7 +77,7 @@ Model::Model(const char* modelPath)
         glBindVertexArray(VAO);
         glBindBuffer(GL_ARRAY_BUFFER, VBO);
 
-        glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(glm::vec3), &vertices[0], GL_STATIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(float) * 3, &vertices[0], GL_STATIC_DRAW);
 
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, vertexIndices.size() * sizeof(unsigned int),
@@ -80,13 +85,13 @@ Model::Model(const char* modelPath)
 
         // Vertex positions
         glEnableVertexAttribArray(0);
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(glm::vec3), (void*)0);
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
         // Vertex normals
         glEnableVertexAttribArray(1);
-        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(glm::vec3), (void*)(3 * sizeof(glm::vec3)));
+        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)(3 * sizeof(float)));
         // Vertex texture coords
         glEnableVertexAttribArray(2);
-        glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(glm::vec2), (void*)(6 * sizeof(glm::vec3)));
+        glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void*)(6 * sizeof(float)));
 
         glBindVertexArray(0);
     }
@@ -104,6 +109,8 @@ void Model::Draw(Shader& shader)
     // draw mesh
     shader.Use();
     glBindVertexArray(VAO);
+    int size;  
+    glGetBufferParameteriv(GL_ELEMENT_ARRAY_BUFFER, GL_BUFFER_SIZE, &size);  
     glDrawElements(GL_TRIANGLES, vertexIndices.size(), GL_UNSIGNED_INT, 0);
     glBindVertexArray(0);
 }
