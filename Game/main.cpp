@@ -39,7 +39,7 @@ int main()
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
     // Create the window and set width and height
-    GLFWwindow* window = glfwCreateWindow(SCREENWIDTH, SCREENHEIGHT, "LearnOpenGL", NULL, NULL);
+    GLFWwindow* window = glfwCreateWindow(SCREENWIDTH, SCREENHEIGHT, "OpenGLRPG", NULL, NULL);
     if (window == NULL)
     {
         std::cout << "Failed to create GLFW window" << std::endl;
@@ -167,27 +167,29 @@ int main()
         ProcessInput(window);
 
         // Rendering
-        glClearColor(0.1f, 0.2f, 0.35f, 1.0f);
+        glClearColor(0.1f, 0.35f, 0.2f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         backgroundShader.Use();
         glBindTexture(GL_TEXTURE_2D, texture);
 
-        glBindVertexArray(VAO);
+        //glBindVertexArray(VAO);
         // glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
         unlitShader.Use();
         // Create transformations
         glm::mat4 model = glm::mat4(1.0f);
         //model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
-        model = glm::scale(model, glm::vec3(40.0f, 1.0f, 40.0f));
+        model = glm::scale(model, glm::vec3(3.0f, 3.0f, 3.0f));
+        model  = glm::translate(model, glm::vec3(6.0f, 0.0f, 0.0f));
         //view  = glm::translate(view, glm::vec3(0.0f, -2.0f, 2.0f));
         //projection = glm::perspective(glm::radians(45.0f), (float)SCREENWIDTH / (float)SCREENHEIGHT, 0.1f, 100.0f);
 
         unlitShader.SetMat4("model", model);
         unlitShader.SetMat4("view", mainCamera.GetView());
         unlitShader.SetMat4("projection", mainCamera.GetProjection());
-        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+        cube.Draw(unlitShader);
+        //glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
         // Check and call events and swap buffers
         glfwSwapBuffers(window); 
@@ -235,5 +237,22 @@ void ProcessInput(GLFWwindow* window)
     if(glfwGetKey(window, GLFW_KEY_J) == GLFW_PRESS)
     {
         mainCamera.MoveCamera(Direction::Left);
+    }
+    // Rotating camera
+    if(glfwGetKey(window, GLFW_KEY_O) == GLFW_PRESS)
+    {
+        mainCamera.RotateCamera(Direction::Right);
+    }
+    if(glfwGetKey(window, GLFW_KEY_U) == GLFW_PRESS)
+    {
+        mainCamera.RotateCamera(Direction::Left);
+    }
+    if(glfwGetKey(window, GLFW_KEY_Y) == GLFW_PRESS)
+    {
+        mainCamera.RotateCamera(Direction::Forward);
+    }
+    if(glfwGetKey(window, GLFW_KEY_H) == GLFW_PRESS)
+    {
+        mainCamera.RotateCamera(Direction::Back);
     }
 }

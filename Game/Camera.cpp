@@ -6,26 +6,25 @@ Camera::Camera(const int& screenWidth, const int& screenHeight)
     // Positive z-axis goes towards the screen and towards you, so we want to move the camera that way.
     cameraPos = glm::vec3(0.0f, 0.0f, 3.0f);
 
-    // Camera direction
-    cameraTarget = glm::vec3(0.0f, 0.0f, 0.0f);
-    // Direction is actually pointing in reverse direction of the target
-    cameraDirection = glm::normalize(cameraPos - cameraTarget);
-
     // Get camera right vector by getting the cross product of worldUp and cameraDirection vectors
     worldUp = glm::vec3(0.0f, 1.0f, 0.0f);
-    cameraRight = glm::normalize(glm::cross(worldUp, cameraDirection));
-
-    // Get camera up vector
-    cameraUp = glm::cross(cameraDirection, cameraRight);
 
     // Camera front
     cameraFront = glm::vec3(0.0, 0.0, -1.0f);
+
+    // Get camera right
+    cameraRight = glm::normalize(glm::cross(worldUp, cameraFront));
+
+    // Get camera up vector
+    cameraUp = glm::cross(cameraFront, cameraRight);
     
     // Use glm::lookAt to define the view matrix by providing the function the camera position,
     // target position and world vector up.
     view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
 
     projection = glm::perspective(glm::radians(45.0f), (float)screenWidth / (float)screenHeight, 0.1f, 100.0f);
+
+    UpdateVectors();
 }
 
 glm::vec3 Camera::GetCameraPos()
@@ -33,9 +32,9 @@ glm::vec3 Camera::GetCameraPos()
     return cameraPos;
 }
 
-glm::vec3 Camera::GetCameraTarget()
+glm::vec3 Camera::GetCameraFront()
 {
-    return cameraTarget;
+    return cameraFront;
 }
 
 glm::vec3 Camera::GetCameraUp()
@@ -86,5 +85,61 @@ void Camera::MoveCamera(Direction dir)
     default:
         break;
     }
+    view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
+}
+
+void Camera::RotateCamera(Direction dir)
+{
+    switch (dir)
+    {
+    case Direction::Forward:
+        pitch += 1.0f;
+        if(pitch > 89.0f)
+        {
+            pitch = 89.0f;
+        }
+        if(pitch < -89.0f)
+        {
+            pitch = -89.0f;
+        }
+        break;
+
+    case Direction::Right:
+        yaw += 1.0f;
+        break;
+
+    case Direction::Back:
+        pitch -= 1.0f;
+        if(pitch > 89.0f)
+        {
+            pitch = 89.0f;
+        }
+        if(pitch < -89.0f)
+        {
+            pitch = -89.0f;
+        }
+        break;
+
+    case Direction::Left:
+        yaw -= 1.0f;
+        break;
+    
+    default:
+        break;
+    }
+    UpdateVectors();
+}
+
+void Camera::UpdateVectors()
+{
+    // Calculate the new Front vector
+    glm::vec3 front;
+    front.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
+    front.y = sin(glm::radians(pitch));
+    front.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
+    cameraFront = glm::normalize(front);
+    // Also re-calculate the Right and Up vector
+    cameraRight = glm::normalize(glm::cross(cameraFront, worldUp));  // Normalize the vectors, because their length gets closer to 0 the more you look up or down which results in slower movement.
+    cameraUp = glm::normalize(glm::cross(cameraRight, cameraFront));
     view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
 }

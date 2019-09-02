@@ -16,7 +16,7 @@ public:
 
     // Getters and setters
     glm::vec3 GetCameraPos();
-    glm::vec3 GetCameraTarget();
+    glm::vec3 GetCameraFront();
     glm::vec3 GetCameraUp();
     glm::vec3 GetCameraRight();
     glm::mat4 GetView();
@@ -24,14 +24,15 @@ public:
 
     void SetCameraPos(glm::vec3 newPos);
     void MoveCamera(Direction dir);
+    void RotateCamera(Direction dir);
 private:
+    // Update camera vectors
+    void UpdateVectors();
+
+    float yaw = 0.0f;
+    float pitch = 0.0f;
     // Current camera position
     glm::vec3 cameraPos;
-
-    // Camera direction
-    glm::vec3 cameraTarget;
-    // Direction is actually pointing in reverse direction of the target
-    glm::vec3 cameraDirection;
 
     // Get camera right vector by getting the cross product of worldUp and cameraDirection vectors
     glm::vec3 worldUp;

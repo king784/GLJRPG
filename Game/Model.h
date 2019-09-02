@@ -10,6 +10,8 @@
 #include <sstream>
 #include <iostream>
 
+#include "Shader.h"
+
 class Model
 {
 public:
@@ -19,14 +21,14 @@ public:
     // Constructer reads and creates the shader
     Model(const char* modelPath);
     // Use the shader
-    void Draw();
+    void Draw(Shader& shader);
 private:
     unsigned int VBO, VAO, EBO;
     std::vector<glm::vec3> vertices;
     std::vector<glm::vec2> texCoods;
     std::vector<glm::vec3> normals;
-    //std::vector<unsigned int> vertexIndices, uvIndices, normalIndices;
-    std::vector<GLushort> indices;
+    std::vector<unsigned int> vertexIndices, uvIndices, normalIndices;
+    //std::vector<GLushort> indices;
 };
   
 #endif
