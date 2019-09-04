@@ -10,16 +10,12 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-// Single header image loading library by Sean Barrett
-#define STB_IMAGE_IMPLEMENTATION
-#include "stb_image.h"
-
 // Own includes
 #include "Shader.h"
 #include "Model.h"
 #include "Camera.h"
+#include "Texture.h"
 #include "Enums.h"
-
 
 // Global variables
 const unsigned int SCREENWIDTH = 800;
@@ -65,10 +61,14 @@ int main()
 
     // Path at school: C:/Users/teemu.turku/Documents/GitHub/GLJRPG
     // at home: D:/Projects/OpenGL/GLJRPG
-    std::string pathToRoot = "D:/Projects/OpenGL/GLJRPG"; 
+    std::string pathToRoot = "C:/Users/teemu.turku/Documents/GitHub/GLJRPG"; 
     Shader backgroundShader((pathToRoot + "/Game/Shaders/Background.vs").c_str(), (pathToRoot + "/Game/Shaders/Background.fs").c_str());
     Shader unlitShader((pathToRoot + "/Game/Shaders/Unlit.vs").c_str(), (pathToRoot + "/Game/Shaders/Unlit.fs").c_str());
 
+    // Textures
+    Texture bgTexture((pathToRoot + "/Game/Images/Background.png").c_str());
+
+    // Models
     Model cube((pathToRoot + "/Game/Models/Cube/box.obj").c_str());
 
     // -1, -1, 0 is bottom left of screen and 1, 1, 0 is top right of screen.
@@ -124,39 +124,6 @@ int main()
     // Unbind VAO after so VAO calls won't accidentally modify this VAO.
     glBindVertexArray(0);
 
-    // Load images correct side up
-    stbi_set_flip_vertically_on_load(true);  
-
-    // Generate texture from image
-    unsigned int texture;
-    glGenTextures(1, &texture);
-
-    // Bind texture so we can generate the texture using image data
-    glBindTexture(GL_TEXTURE_2D, texture);
-
-    // Set texture wrapping and filtering options on bound object
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);	
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-    // Image loading
-    int width, height, nrChannels;
-    unsigned char* data = stbi_load((pathToRoot + "/Game/Images/Background.png").c_str(), &width, &height, &nrChannels, 0);
-
-    if(data)
-    {
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
-        glGenerateMipmap(GL_TEXTURE_2D);
-    }
-    else
-    {
-        std::cout << "Failed to load texture!" << std::endl;
-    }   
-
-    // Free image memory
-    stbi_image_free(data);
-
     // Enable depth test
     glEnable(GL_DEPTH_TEST);
 
@@ -169,12 +136,6 @@ int main()
         // Rendering
         glClearColor(0.1f, 0.35f, 0.2f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-        backgroundShader.Use();
-        glBindTexture(GL_TEXTURE_2D, texture);
-
-        //glBindVertexArray(VAO);
-        // glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
         unlitShader.Use();
         // Create transformations
@@ -190,6 +151,13 @@ int main()
         unlitShader.SetMat4("projection", mainCamera.GetProjection());
         cube.Draw(unlitShader);
         //glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+
+        // Draw background
+        backgroundShader.Use();
+        glBindTexture(GL_TEXTURE_2D, bgTexture.GetID());
+
+        glBindVertexArray(VAO);
+        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
         // Check and call events and swap buffers
         glfwSwapBuffers(window); 
