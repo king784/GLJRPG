@@ -68,8 +68,10 @@ int main()
     // Textures
     Texture bgTexture((pathToRoot + "/Game/Images/Background.png").c_str());
 
+    // Path to box: "/Game/Models/Cube/box.png"
+
     // Models
-    Model cube((pathToRoot + "/Game/Models/Cube/box.obj").c_str());
+    Model cube((pathToRoot + "/Game/Models/Cube/box.obj").c_str(), (pathToRoot + "/Game/Models/Cube/box.png").c_str());
 
     // -1, -1, 0 is bottom left of screen and 1, 1, 0 is top right of screen.
     // Triangle
@@ -153,11 +155,11 @@ int main()
         //glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
         // Draw background
-        backgroundShader.Use();
-        glBindTexture(GL_TEXTURE_2D, bgTexture.GetID());
+        // backgroundShader.Use();
+        // glBindTexture(GL_TEXTURE_2D, bgTexture.GetID());
 
-        glBindVertexArray(VAO);
-        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+        // glBindVertexArray(VAO);
+        // glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
         // Check and call events and swap buffers
         glfwSwapBuffers(window); 

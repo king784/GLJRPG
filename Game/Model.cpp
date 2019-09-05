@@ -1,6 +1,6 @@
 #include "Model.h"
 
-Model::Model(const char* modelPath)
+Model::Model(const char* modelPath, const char* texturePath)
 {
     std::ifstream modelIStream;
 
@@ -23,7 +23,7 @@ Model::Model(const char* modelPath)
                 s >> v.x;
                 s >> v.y;
                 s >> v.z;
-                vertices.push_back(v);
+                verticesPos.push_back(v);
             }
             // Read texture coordinates
             else if(line.substr(0,3) == "vt ")
@@ -70,6 +70,11 @@ Model::Model(const char* modelPath)
         }
         modelIStream.close();
 
+        for(int i = 0; i < 5; i++)
+        {
+            vertices.push_back(Vertex(verticesPos[i], normals[i], texCoods[i]));
+        }
+
         glGenVertexArrays(1, &VAO);
         glGenBuffers(1, &VBO);
         glGenBuffers(1, &EBO);
@@ -77,7 +82,11 @@ Model::Model(const char* modelPath)
         glBindVertexArray(VAO);
         glBindBuffer(GL_ARRAY_BUFFER, VBO);
 
-        glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(float) * 3, &vertices[0], GL_STATIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Vertex), &vertices[0], GL_STATIC_DRAW);
+        
+        // glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(float) * 3, &vertices[0], GL_STATIC_DRAW);
+        // glBufferData(GL_ARRAY_BUFFER, normals.size() * sizeof(float) * 3, &normals[0], GL_STATIC_DRAW);
+        // glBufferData(GL_ARRAY_BUFFER, texCoods.size() * sizeof(float) * 2, &texCoods[0], GL_STATIC_DRAW);
 
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, vertexIndices.size() * sizeof(unsigned int),
@@ -85,15 +94,17 @@ Model::Model(const char* modelPath)
 
         // Vertex positions
         glEnableVertexAttribArray(0);
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)0);
         // Vertex normals
         glEnableVertexAttribArray(1);
-        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)(3 * sizeof(float)));
+        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)(3 * sizeof(float)));
         // Vertex texture coords
         glEnableVertexAttribArray(2);
-        glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void*)(6 * sizeof(float)));
+        glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)(6 * sizeof(float)));
 
         glBindVertexArray(0);
+
+        texture = new Texture(texturePath);
     }
     catch(std::ifstream::failure e)
     {
@@ -101,14 +112,22 @@ Model::Model(const char* modelPath)
     }
 }
 
+Model::~Model()
+{
+    delete(texture);
+}
+
 void Model::Draw(Shader& shader)
 {
-    // glBindTexture(GL_TEXTURE_2D, textures.id);
-    // glActiveTexture(GL_TEXTURE0);
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, texture->GetID());
 
-    // draw mesh
     shader.Use();
+    shader.SetInt("myTexture", texture->GetID());
+
     glBindVertexArray(VAO);
+
+    // Draw mesh
     int size;  
     glGetBufferParameteriv(GL_ELEMENT_ARRAY_BUFFER, GL_BUFFER_SIZE, &size);  
     glDrawElements(GL_TRIANGLES, vertexIndices.size(), GL_UNSIGNED_INT, 0);
