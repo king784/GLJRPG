@@ -22,7 +22,7 @@ Camera::Camera(const int& screenWidth, const int& screenHeight)
     // target position and world vector up.
     view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
 
-    projection = glm::perspective(glm::radians(45.0f), (float)screenWidth / (float)screenHeight, 0.1f, 100.0f);
+    projection = glm::perspective(glm::radians(45.0f), (float)screenWidth / (float)screenHeight, 0.1f, 10000.0f);
 
     UpdateVectors();
 }

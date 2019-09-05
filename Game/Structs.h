@@ -8,15 +8,15 @@
 
 struct Vertex
 {
-    glm::vec3 vertices;
-    glm::vec3 normals;
-    glm::vec2 texCoods;
+    glm::vec3 vertice;
+    glm::vec3 normal;
+    glm::vec2 texCoord;
 
-    Vertex(glm::vec3 newVertices, glm::vec3 newNormals, glm::vec2 newTexCoords)
+    Vertex(glm::vec3 newVertice, glm::vec3 newNormal, glm::vec2 newTexCoord)
     {
-        vertices = newVertices;
-        normals = newNormals;
-        texCoods = newTexCoords;
+        vertice = newVertice;
+        normal = newNormal;
+        texCoord = newTexCoord;
     }
 };
 

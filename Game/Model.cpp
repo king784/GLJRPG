@@ -70,7 +70,7 @@ Model::Model(const char* modelPath, const char* texturePath)
         }
         modelIStream.close();
 
-        for(int i = 0; i < 5; i++)
+        for(int i = 0; i < vertexIndices.size(); i++)
         {
             vertices.push_back(Vertex(verticesPos[i], normals[i], texCoods[i]));
         }
@@ -97,10 +97,10 @@ Model::Model(const char* modelPath, const char* texturePath)
         glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)0);
         // Vertex normals
         glEnableVertexAttribArray(1);
-        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)(3 * sizeof(float)));
+        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, normal));
         // Vertex texture coords
         glEnableVertexAttribArray(2);
-        glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)(6 * sizeof(float)));
+        glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, texCoord));
 
         glBindVertexArray(0);
 
@@ -123,7 +123,7 @@ void Model::Draw(Shader& shader)
     glBindTexture(GL_TEXTURE_2D, texture->GetID());
 
     shader.Use();
-    shader.SetInt("myTexture", texture->GetID());
+    shader.SetInt("myTexture", 0);
 
     glBindVertexArray(VAO);
 

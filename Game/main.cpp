@@ -71,7 +71,7 @@ int main()
     // Path to box: "/Game/Models/Cube/box.png"
 
     // Models
-    Model cube((pathToRoot + "/Game/Models/Cube/box.obj").c_str(), (pathToRoot + "/Game/Models/Cube/box.png").c_str());
+    Model cube((pathToRoot + "/Game/Models/hugi/Hugis.obj").c_str(), (pathToRoot + "/Game/Models/Cube/box.png").c_str());
 
     // -1, -1, 0 is bottom left of screen and 1, 1, 0 is top right of screen.
     // Triangle
