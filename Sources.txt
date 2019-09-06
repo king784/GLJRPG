@@ -1,4 +1,6 @@
-Creator - Website - Asset name
-Saroman - https://opengameart.org/content/stone-pavement-ground-tile - Stone Pavement Ground Tile
-marmigliorini - https://opengameart.org/content/medieval-house - Medieval House
-hc - https://opengameart.org/content/galaxy-skybox - Galaxy Skybox
+Creator | Website - Asset name
+Saroman | https://opengameart.org/content/stone-pavement-ground-tile | Stone Pavement Ground Tile
+marmigliorini | https://opengameart.org/content/medieval-house | Medieval House
+hc | https://opengameart.org/content/galaxy-skybox | Galaxy Skybox
+HydroGene | https://opengameart.org/content/rpg-project-overworld-map | RPG Project - Overworld Map.mp3
+JSKNYC | https://opengameart.org/content/ale-n-a-rag | alenarag.mp3 

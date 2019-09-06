@@ -16,6 +16,7 @@
 #include "Camera.h"
 #include "Texture.h"
 #include "Enums.h"
+#include "AudioManager.h"
 
 // Global variables
 const unsigned int SCREENWIDTH = 800;
@@ -128,6 +129,9 @@ int main()
 
     // Enable depth test
     glEnable(GL_DEPTH_TEST);
+
+    // Audio
+    Audiomanager audiomanager = Audiomanager();
 
     // Main loop
     while(!glfwWindowShouldClose(window))
