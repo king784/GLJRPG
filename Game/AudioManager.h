@@ -8,6 +8,7 @@
 
 #include <AL/al.h>
 #include <AL/alc.h>
+#include <AL/alut.h>
 
 #include "CustomMath.h"
 
@@ -16,11 +17,23 @@ struct Sound
     int channel;
     int sampleRate;
     int bps;
-    int size;
-    int format;
+    ALsizei size, frequency;
+    ALenum format;
     char* pathToSound;
-    char* data;
+    ALvoid* data;
+    ALboolean loop = AL_FALSE;
 };
+
+// struct Sound
+// {
+//     int channel;
+//     int sampleRate;
+//     int bps;
+//     int size;
+//     int format;
+//     char* pathToSound;
+//     char* data;
+// };
 
 class Audiomanager
 {

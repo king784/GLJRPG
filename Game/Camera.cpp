@@ -60,6 +60,7 @@ glm::mat4 Camera::GetProjection()
 void Camera::SetCameraPos(glm::vec3 newPos)
 {
     cameraPos = newPos;
+    view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
 }
 
 void Camera::MoveCamera(Direction dir)

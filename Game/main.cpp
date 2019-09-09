@@ -22,6 +22,7 @@
 const unsigned int SCREENWIDTH = 800;
 const unsigned int SCREENHEIGHT = 600;
 Camera mainCamera(SCREENWIDTH, SCREENHEIGHT);
+Model* cube;
 
 // Function prototypes
 void FramebufferSizeCallback(GLFWwindow* window, int width, int height);
@@ -58,13 +59,15 @@ int main()
     // Tell GLFW to call FramebufferSizeCallback on every window resize.
     glfwSetFramebufferSizeCallback(window, FramebufferSizeCallback); 
 
-    // Shaders
-
     // Path at school: C:/Users/teemu.turku/Documents/GitHub/GLJRPG
     // at home: D:/Projects/OpenGL/GLJRPG
-    std::string pathToRoot = "D:/Projects/OpenGL/GLJRPG"; 
-    Shader backgroundShader((pathToRoot + "/Game/Shaders/Background.vs").c_str(), (pathToRoot + "/Game/Shaders/Background.fs").c_str());
-    Shader unlitShader((pathToRoot + "/Game/Shaders/Unlit.vs").c_str(), (pathToRoot + "/Game/Shaders/Unlit.fs").c_str());
+    std::string pathToRoot = "C:/Users/teemu.turku/Documents/GitHub/GLJRPG"; 
+    // Player
+    cube = new Model((pathToRoot + "/Game/Models/Cube/box.obj").c_str(), (pathToRoot + "/Game/Models/Cube/Colors.png").c_str(), glm::vec3(4.0, 0.0, 1.0), glm::vec3(1.0));
+
+    // Shaders
+    Shader backgroundShader((pathToRoot + "/Game/Shaders/Background.vs").c_str(), (pathToRoot + "/Game/Shaders/Background.fs").c_str(), "backgroundShader");
+    Shader unlitShader((pathToRoot + "/Game/Shaders/Unlit.vs").c_str(), (pathToRoot + "/Game/Shaders/Unlit.fs").c_str(), "unlitShader");
 
     // Textures
     Texture bgTexture((pathToRoot + "/Game/Images/Background.png").c_str());
@@ -72,7 +75,7 @@ int main()
     // Path to box: "/Game/Models/Cube/box.png"
 
     // Models
-    Model cube((pathToRoot + "/Game/Models/hugi/Hugis.obj").c_str(), (pathToRoot + "/Game/Models/Cube/box.png").c_str());
+    
 
     // -1, -1, 0 is bottom left of screen and 1, 1, 0 is top right of screen.
     // Triangle
@@ -143,27 +146,26 @@ int main()
         glClearColor(0.1f, 0.35f, 0.2f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+        // Draw background
+        backgroundShader.Use();
+        glBindTexture(GL_TEXTURE_2D, bgTexture.GetID());
+
+        glBindVertexArray(VAO);
+        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+
+        glClear(GL_DEPTH_BUFFER_BIT);
+
         unlitShader.Use();
         // Create transformations
-        glm::mat4 model = glm::mat4(1.0f);
         //model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
-        model = glm::scale(model, glm::vec3(3.0f, 3.0f, 3.0f));
-        model  = glm::translate(model, glm::vec3(6.0f, 0.0f, 0.0f));
+
         //view  = glm::translate(view, glm::vec3(0.0f, -2.0f, 2.0f));
         //projection = glm::perspective(glm::radians(45.0f), (float)SCREENWIDTH / (float)SCREENHEIGHT, 0.1f, 100.0f);
 
-        unlitShader.SetMat4("model", model);
         unlitShader.SetMat4("view", mainCamera.GetView());
         unlitShader.SetMat4("projection", mainCamera.GetProjection());
-        cube.Draw(unlitShader);
+        cube->Draw(unlitShader);
         //glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-
-        // Draw background
-        // backgroundShader.Use();
-        // glBindTexture(GL_TEXTURE_2D, bgTexture.GetID());
-
-        // glBindVertexArray(VAO);
-        // glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
         // Check and call events and swap buffers
         glfwSwapBuffers(window); 
@@ -174,6 +176,7 @@ int main()
     glDeleteVertexArrays(1, &VAO);
     glDeleteBuffers(1, &VBO);
     glDeleteBuffers(1, &EBO);
+    delete cube;
 
     // Clean GLFW resources that were allocated.
     glfwTerminate();
@@ -193,6 +196,24 @@ void ProcessInput(GLFWwindow* window)
     if(glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
     {
         glfwSetWindowShouldClose(window, true);
+    }
+
+    // Move player
+    if(glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+    {
+        cube->Move(glm::vec3(1.0, 0.0, 0.0));
+    }
+    if(glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+    {
+        cube->Move(glm::vec3(0.0, 0.0, 1.0));
+    }
+    if(glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+    {
+        cube->Move(glm::vec3(-1.0, 0.0, 0.0));
+    }
+    if(glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+    {
+        cube->Move(glm::vec3(0.0, 0.0, -1.0));
     }
 
     // Debug Movement for moving the camera

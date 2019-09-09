@@ -6,13 +6,13 @@ Audiomanager::~Audiomanager()
     alDeleteBuffers(1, &buffer);
     alcDestroyContext(context);
     alcCloseDevice(audioDevice);
-    delete[] bgMusic.data;
+    // delete[] bgMusic.data;
 }
 
 void Audiomanager::StartAudioManager()
 {
     // Open a handle to a device.
-    audioDevice = alcOpenDevice(0);
+    audioDevice = alcOpenDevice(NULL);
     if(!audioDevice)
     {
         std::cerr << "Device error!" << std::endl;
@@ -20,20 +20,20 @@ void Audiomanager::StartAudioManager()
 
     // Check whether OpenAL supports enumerating devices.
     ALboolean enumeration;
-    enumeration = alcIsExtensionPresent(0, "ALC_ENUMERATION_EXT");
+    enumeration = alcIsExtensionPresent(NULL, "ALC_ENUMERATION_EXT");
     if(enumeration == AL_FALSE)
     {
         // Enumeration not supported. Means that listing the audio devices should only return default device.
-        GetAudioDevices(alcGetString(0, ALC_DEVICE_SPECIFIER));
+        GetAudioDevices(alcGetString(NULL, ALC_DEVICE_SPECIFIER));
     }
     else
     {
         // Enumeration is supported.
-        GetAudioDevices(alcGetString(0, ALC_DEVICE_SPECIFIER));
+        GetAudioDevices(alcGetString(NULL, ALC_DEVICE_SPECIFIER));
     }
 
     // Create and initialize a context.  
-    context = alcCreateContext(audioDevice, 0);
+    context = alcCreateContext(audioDevice, NULL);
     if(!alcMakeContextCurrent(context))
     {
         std::cerr << "Failed to make audio context!" << std::endl;
@@ -48,30 +48,33 @@ void Audiomanager::StartAudioManager()
     // Create source
     CreateSource();
     
-    bgMusic.data = LoadWav("D:/Projects/OpenGL/GLJRPG/Game/Sounds/Music/alenarag.wav", 
-    bgMusic.channel, bgMusic.sampleRate, bgMusic.bps, bgMusic.size);
+    char* path = "C:/Users/teemu.turku/Documents/GitHub/GLJRPG/Game/Sounds/Music/alenarag.wav";
+    // Load wav data
+    alutLoadWAVFile((ALbyte*)path, &bgMusic.format, &bgMusic.data, &bgMusic.size, &bgMusic.frequency, &bgMusic.loop);
+    // bgMusic.data = LoadWav("C:/Users/teemu.turku/Documents/GitHub/GLJRPG/Game/Sounds/Music/alenarag.wav", 
+    // bgMusic.channel, bgMusic.sampleRate, bgMusic.bps, bgMusic.size);
 
-    SetAudioFormat(bgMusic);
+    // SetAudioFormat(bgMusic);
 
     // Generate buffer and buffer the data
     alGenBuffers((ALuint)1, &buffer);
 
-    alBufferData(buffer, bgMusic.format, bgMusic.data, bgMusic.size, bgMusic.sampleRate);
-
+    alBufferData(buffer, bgMusic.format, bgMusic.data, bgMusic.size, bgMusic.frequency);
     CheckForErrors();
 
+    alSourcei(source, AL_BUFFER, buffer);
     // Play the source
     alSourcePlay(source);
     CheckForErrors();
 
-    // Get source state
-    ALint source_state;
-    alGetSourcei(source, AL_SOURCE_STATE, &source_state);
-    while(source_state == AL_PLAYING)
-    {
-        alGetSourcei(source, AL_SOURCE_STATE, &source_state);
-        CheckForErrors();
-    }
+    // Get source state. This can be used to check if the source is playing.
+    // ALint source_state;
+    // alGetSourcei(source, AL_SOURCE_STATE, &source_state);
+    // while(source_state == AL_PLAYING)
+    // {
+    //     alGetSourcei(source, AL_SOURCE_STATE, &source_state);
+    //     CheckForErrors();
+    // }
 }
 
 void Audiomanager::GetAudioDevices(const ALCchar* devices)

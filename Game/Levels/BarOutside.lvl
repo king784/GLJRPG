@@ -1,0 +1,4 @@
+# Model format m: PathToModel PathToTexture ShaderName vec3Position vec3Rotation vec3Scale
+m Models/Cube/box.obj Models/Cube/Colors.png unlitShader 1.0 1.0 3.0 0.0 0.0 0.0 1.0 1.0 1.0
+# Background texture bg: PathToTexture ShaderName
+bg /Images/Background.png backgroundShader

@@ -1,6 +1,6 @@
 #include "Model.h"
 
-Model::Model(const char* modelPath, const char* texturePath)
+Model::Model(const char* modelPath, const char* texturePath, glm::vec3 startPosition, glm::vec3 startScale)
 {
     std::ifstream modelIStream;
 
@@ -32,7 +32,7 @@ Model::Model(const char* modelPath, const char* texturePath)
                 glm::vec2 v; 
                 s >> v.x;
                 s >> v.y;
-                texCoods.push_back(v);
+                texCoords.push_back(v);
             }
             // Read vertex normals
             else if(line.substr(0,3) == "vn ")
@@ -72,7 +72,7 @@ Model::Model(const char* modelPath, const char* texturePath)
 
         for(int i = 0; i < vertexIndices.size(); i++)
         {
-            vertices.push_back(Vertex(verticesPos[i], normals[i], texCoods[i]));
+            vertices.push_back(Vertex(verticesPos[i], normals[i], texCoords[i]));
         }
 
         glGenVertexArrays(1, &VAO);
@@ -105,6 +105,9 @@ Model::Model(const char* modelPath, const char* texturePath)
         glBindVertexArray(0);
 
         texture = new Texture(texturePath);
+
+        position = startPosition;
+        scale = startScale;
     }
     catch(std::ifstream::failure e)
     {
@@ -125,6 +128,11 @@ void Model::Draw(Shader& shader)
     shader.Use();
     shader.SetInt("myTexture", 0);
 
+    glm::mat4 model = glm::mat4(1.0f);
+    model = glm::translate(model, position);
+    model = glm::scale(model, scale);
+    shader.SetMat4("model", model);
+
     glBindVertexArray(VAO);
 
     // Draw mesh
@@ -132,4 +140,14 @@ void Model::Draw(Shader& shader)
     glGetBufferParameteriv(GL_ELEMENT_ARRAY_BUFFER, GL_BUFFER_SIZE, &size);  
     glDrawElements(GL_TRIANGLES, vertexIndices.size(), GL_UNSIGNED_INT, 0);
     glBindVertexArray(0);
+}
+
+void Model::SetPosition(glm::vec3 newPosition)
+{
+    position = newPosition;
+}
+
+void Model::Move(glm::vec3 direction, float speed)
+{
+    position += glm::normalize(direction) * speed;
 }

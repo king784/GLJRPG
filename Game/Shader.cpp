@@ -1,6 +1,6 @@
 #include "Shader.h"
 
-Shader::Shader(const char* vertexPath, const char* fragmentPath)
+Shader::Shader(const char* vertexPath, const char* fragmentPath, std::string newShaderName)
 {
     // Get the source code from file path.
     std::string vertexCode;
@@ -80,6 +80,9 @@ Shader::Shader(const char* vertexPath, const char* fragmentPath)
         glGetProgramInfoLog(ID, 512, NULL, infoLog);
         std::cerr << "ERROR!! Shader program linking failed!\n" << infoLog << std::endl;
     }
+
+    // Set shader name
+    shaderName = newShaderName;
 
     // Delete shaders as they are already linked to the program and are no longer needed.
     glDeleteShader(vertex);

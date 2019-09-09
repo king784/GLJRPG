@@ -15,9 +15,10 @@ class Shader
 public:
     // the program ID
     unsigned int ID;
+    std::string shaderName;
   
     // Constructer reads and creates the shader
-    Shader(const char* vertexPath, const char* fragmentPath);
+    Shader(const char* vertexPath, const char* fragmentPath, std::string newShaderName);
     // Use the shader
     void Use();
     // utility uniform functions
