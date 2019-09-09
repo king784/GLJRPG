@@ -1,6 +1,15 @@
 #include "AudioManager.h"
 
-Audiomanager::Audiomanager()
+Audiomanager::~Audiomanager()
+{
+    alDeleteSources(1, &source);
+    alDeleteBuffers(1, &buffer);
+    alcDestroyContext(context);
+    alcCloseDevice(audioDevice);
+    delete[] bgMusic.data;
+}
+
+void Audiomanager::StartAudioManager()
 {
     // Open a handle to a device.
     audioDevice = alcOpenDevice(0);
@@ -63,15 +72,6 @@ Audiomanager::Audiomanager()
         alGetSourcei(source, AL_SOURCE_STATE, &source_state);
         CheckForErrors();
     }
-}
-
-Audiomanager::~Audiomanager()
-{
-    alDeleteSources(1, &source);
-    alDeleteBuffers(1, &buffer);
-    alcDestroyContext(context);
-    alcCloseDevice(audioDevice);
-    delete[] bgMusic.data;
 }
 
 void Audiomanager::GetAudioDevices(const ALCchar* devices)

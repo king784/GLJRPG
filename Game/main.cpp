@@ -131,7 +131,7 @@ int main()
     glEnable(GL_DEPTH_TEST);
 
     // Audio
-    Audiomanager audiomanager = Audiomanager();
+    Audiomanager::GetInstance().StartAudioManager();
 
     // Main loop
     while(!glfwWindowShouldClose(window))

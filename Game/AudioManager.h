@@ -25,8 +25,15 @@ struct Sound
 class Audiomanager
 {
 public:
-    Audiomanager();
+    //Audiomanager();
     ~Audiomanager();
+    // Singleton
+	static Audiomanager& GetInstance()
+	{
+		static Audiomanager instance;
+		return instance;
+	};
+    void StartAudioManager();
     void GetAudioDevices(const ALCchar* devices);
     void SetListenerPoint(const ALfloat* newPoint);
     void CreateSource();
