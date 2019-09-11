@@ -21,7 +21,7 @@
 // Global variables
 const unsigned int SCREENWIDTH = 800;
 const unsigned int SCREENHEIGHT = 600;
-Camera mainCamera(SCREENWIDTH, SCREENHEIGHT);
+Camera mainCamera(SCREENWIDTH, SCREENHEIGHT, glm::vec3(2.0, 2.0, 5.0), -10.0f, 5.0f);
 Model* cube;
 
 // Function prototypes
@@ -64,6 +64,8 @@ int main()
     std::string pathToRoot = "C:/Users/teemu.turku/Documents/GitHub/GLJRPG"; 
     // Player
     cube = new Model((pathToRoot + "/Game/Models/Cube/box.obj").c_str(), (pathToRoot + "/Game/Models/Cube/Colors.png").c_str(), glm::vec3(4.0, 0.0, 1.0), glm::vec3(1.0));
+
+    Model barrel((pathToRoot + "/Game/Models/Barrel/barrel.obj").c_str(), (pathToRoot + "/Game/Models/Barrel/barrel.png").c_str(), glm::vec3(8.0, -0.5, 3.0), glm::vec3(0.5));
 
     // Shaders
     Shader backgroundShader((pathToRoot + "/Game/Shaders/Background.vs").c_str(), (pathToRoot + "/Game/Shaders/Background.fs").c_str(), "backgroundShader");
@@ -166,6 +168,8 @@ int main()
         unlitShader.SetMat4("projection", mainCamera.GetProjection());
         cube->Draw(unlitShader);
         //glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+
+        barrel.Draw(unlitShader);
 
         // Check and call events and swap buffers
         glfwSwapBuffers(window); 

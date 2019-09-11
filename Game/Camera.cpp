@@ -1,6 +1,6 @@
 #include "Camera.h"
 
-Camera::Camera(const int& screenWidth, const int& screenHeight)
+Camera::Camera(const int& screenWidth, const int& screenHeight, glm::vec3 startPosition, float startYaw, float startPitch)
 {
     // Camera definitions
     // Positive z-axis goes towards the screen and towards you, so we want to move the camera that way.
@@ -23,6 +23,9 @@ Camera::Camera(const int& screenWidth, const int& screenHeight)
     view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
 
     projection = glm::perspective(glm::radians(45.0f), (float)screenWidth / (float)screenHeight, 0.1f, 10000.0f);
+
+    yaw = startYaw;
+    pitch = startPitch;
 
     UpdateVectors();
 }

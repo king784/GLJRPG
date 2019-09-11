@@ -12,7 +12,7 @@
 class Camera
 {
 public:
-   Camera(const int& screenWidth, const int& screenHeight);
+   Camera(const int& screenWidth, const int& screenHeight, glm::vec3 startPosition = glm::vec3(0.0, 0.0, 3.0), float startYaw = 0.0f, float startPitch = 0.0f);
 
     // Getters and setters
     glm::vec3 GetCameraPos();
