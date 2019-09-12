@@ -13,6 +13,7 @@
 // Own includes
 #include "Shader.h"
 #include "Model.h"
+#include "GameObject.h" // Contains basic shapes
 #include "Camera.h"
 #include "Texture.h"
 #include "Enums.h"
@@ -67,9 +68,12 @@ int main()
 
     Model barrel((pathToRoot + "/Game/Models/Barrel/barrel.obj").c_str(), (pathToRoot + "/Game/Models/Barrel/barrel.png").c_str(), glm::vec3(8.0, -0.5, 3.0), glm::vec3(0.5));
 
+    Cube maskBoxCube(glm::vec3(5.0, -0.5, 2.0), glm::vec3(1.0));
+
     // Shaders
     Shader backgroundShader((pathToRoot + "/Game/Shaders/Background.vs").c_str(), (pathToRoot + "/Game/Shaders/Background.fs").c_str(), "backgroundShader");
     Shader unlitShader((pathToRoot + "/Game/Shaders/Unlit.vs").c_str(), (pathToRoot + "/Game/Shaders/Unlit.fs").c_str(), "unlitShader");
+    Shader colorNShader((pathToRoot + "/Game/Shaders/ColorN.vs").c_str(), (pathToRoot + "/Game/Shaders/ColorN.fs").c_str(), "colorNShader");
 
     // Textures
     Texture bgTexture((pathToRoot + "/Game/Images/Background.png").c_str());
@@ -155,7 +159,19 @@ int main()
         glBindVertexArray(VAO);
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
+        // Clear depth buffer so the background stays in the back, behind everything.
         glClear(GL_DEPTH_BUFFER_BIT);
+
+        // Don't write to color output, but write to depth so we can mask out objects.
+        glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
+
+        colorNShader.Use();
+        colorNShader.SetMat4("view", mainCamera.GetView());
+        colorNShader.SetMat4("projection", mainCamera.GetProjection());
+        maskBoxCube.Draw(colorNShader);
+
+        // Re-enable writing to color output.
+        glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
 
         unlitShader.Use();
         // Create transformations
