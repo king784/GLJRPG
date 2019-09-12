@@ -1,5 +1,7 @@
 #include "Model.h"
 
+#include "vboindexer.cpp"
+
 Model::Model(const char* modelPath, const char* texturePath, glm::vec3 startPosition, glm::vec3 startScale)
 {
     std::ifstream modelIStream;

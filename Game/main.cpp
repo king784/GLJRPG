@@ -23,7 +23,7 @@
 const unsigned int SCREENWIDTH = 800;
 const unsigned int SCREENHEIGHT = 600;
 Camera mainCamera(SCREENWIDTH, SCREENHEIGHT, glm::vec3(2.0, 2.0, 5.0), -10.0f, 5.0f);
-Model* cube;
+Model* player;
 
 // Function prototypes
 void FramebufferSizeCallback(GLFWwindow* window, int width, int height);
@@ -63,78 +63,25 @@ int main()
     // Path at school: C:/Users/teemu.turku/Documents/GitHub/GLJRPG
     // at home: D:/Projects/OpenGL/GLJRPG
     std::string pathToRoot = "C:/Users/teemu.turku/Documents/GitHub/GLJRPG"; 
+
+    // Textures
+    Texture bgTexture((pathToRoot + "/Game/Images/Background.png").c_str());
+
+    // Models
+    ScreenQuad bg(bgTexture.GetID());
     // Player
-    cube = new Model((pathToRoot + "/Game/Models/Cube/box.obj").c_str(), (pathToRoot + "/Game/Models/Cube/Colors.png").c_str(), glm::vec3(4.0, 0.0, 1.0), glm::vec3(1.0));
+    player = new Model((pathToRoot + "/Game/Models/hugi/Hugis.obj").c_str(), (pathToRoot + "/Game/Models/Cube/Colors.png").c_str(), glm::vec3(4.0, 0.0, 1.0), glm::vec3(0.005));
 
     Model barrel((pathToRoot + "/Game/Models/Barrel/barrel.obj").c_str(), (pathToRoot + "/Game/Models/Barrel/barrel.png").c_str(), glm::vec3(8.0, -0.5, 3.0), glm::vec3(0.5));
 
-    Cube maskBoxCube(glm::vec3(5.0, -0.5, 2.0), glm::vec3(1.0));
+    Cube maskBoxCube(glm::vec3(7.5, 0.0, 2.0), glm::vec3(1.5));
 
     // Shaders
     Shader backgroundShader((pathToRoot + "/Game/Shaders/Background.vs").c_str(), (pathToRoot + "/Game/Shaders/Background.fs").c_str(), "backgroundShader");
     Shader unlitShader((pathToRoot + "/Game/Shaders/Unlit.vs").c_str(), (pathToRoot + "/Game/Shaders/Unlit.fs").c_str(), "unlitShader");
     Shader colorNShader((pathToRoot + "/Game/Shaders/ColorN.vs").c_str(), (pathToRoot + "/Game/Shaders/ColorN.fs").c_str(), "colorNShader");
 
-    // Textures
-    Texture bgTexture((pathToRoot + "/Game/Images/Background.png").c_str());
-
     // Path to box: "/Game/Models/Cube/box.png"
-
-    // Models
-    
-
-    // -1, -1, 0 is bottom left of screen and 1, 1, 0 is top right of screen.
-    // Triangle
-    float vertices[] = 
-    {
-        // positions        // texture coords
-        1.0f,  1.0f, 0.0f, 1.0f, 1.0f,   // top right
-        1.0f, -1.0f, 0.0f, 1.0f, 0.0f,   // bottom right
-        -1.0f, -1.0f, 0.0f, 0.0f, 0.0f,   // bottom left
-        -1.0f,  1.0f, 0.0f, 0.0f, 1.0f    // top left 
-    };
-    
-    // How to draw the vertices
-    unsigned int indices[] = 
-    {  
-        0, 1, 3, // first triangle
-        1, 2, 3  // second triangle
-    };
-
-    // Create memory on the GPU, where we want to store the vertex data by using Vertex Buffer Objects(VBO).
-    // We can send a lot of data to the GPU at once using these buffers.
-    // Once the data has been sent to GPU, it has almost instant access to the vertices, making the rendering fast.
-    // Vertex Array Object can also be bound like VBO. VAO has an advantage that when configuring vertex attribute pointers you only
-    // have to make those calls once and when we want to draw an object, we can just bind the corresponding VAO.
-    // Element Buffer Objects let us use previously defined vertices to draw shapes so we don't need to define the same
-    // vertices twice.
-    unsigned int VBO, VAO, EBO;
-    glGenVertexArrays(1, &VAO);
-    glGenBuffers(1, &VBO);
-    glGenBuffers(1, &EBO);
-
-    // Bind vertex array
-    glBindVertexArray(VAO);
-    // Bind buffer so we can send the vertex buffer object.
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
-
-    // Positions
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
-    glEnableVertexAttribArray(0);
-
-    // Texture coordinates
-    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
-    glEnableVertexAttribArray(1);
-
-    // Unbind buffer
-    glBindBuffer(GL_ARRAY_BUFFER, 0); 
-
-    // Unbind VAO after so VAO calls won't accidentally modify this VAO.
-    glBindVertexArray(0);
 
     // Enable depth test
     glEnable(GL_DEPTH_TEST);
@@ -153,11 +100,12 @@ int main()
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         // Draw background
-        backgroundShader.Use();
-        glBindTexture(GL_TEXTURE_2D, bgTexture.GetID());
+        bg.Draw(backgroundShader);
 
-        glBindVertexArray(VAO);
-        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+        // glBindTexture(GL_TEXTURE_2D, bgTexture.GetID());
+
+        // glBindVertexArray(VAO);
+        // glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
         // Clear depth buffer so the background stays in the back, behind everything.
         glClear(GL_DEPTH_BUFFER_BIT);
@@ -182,7 +130,7 @@ int main()
 
         unlitShader.SetMat4("view", mainCamera.GetView());
         unlitShader.SetMat4("projection", mainCamera.GetProjection());
-        cube->Draw(unlitShader);
+        player->Draw(unlitShader);
         //glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
         barrel.Draw(unlitShader);
@@ -193,10 +141,10 @@ int main()
     }
 
     // De-allocate resources
-    glDeleteVertexArrays(1, &VAO);
-    glDeleteBuffers(1, &VBO);
-    glDeleteBuffers(1, &EBO);
-    delete cube;
+    // glDeleteVertexArrays(1, &VAO);
+    // glDeleteBuffers(1, &VBO);
+    // glDeleteBuffers(1, &EBO);
+    delete player;
 
     // Clean GLFW resources that were allocated.
     glfwTerminate();
@@ -221,19 +169,19 @@ void ProcessInput(GLFWwindow* window)
     // Move player
     if(glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
     {
-        cube->Move(glm::vec3(1.0, 0.0, 0.0));
+        player->Move(glm::vec3(1.0, 0.0, 0.0));
     }
     if(glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
     {
-        cube->Move(glm::vec3(0.0, 0.0, 1.0));
+        player->Move(glm::vec3(0.0, 0.0, 1.0));
     }
     if(glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
     {
-        cube->Move(glm::vec3(-1.0, 0.0, 0.0));
+        player->Move(glm::vec3(-1.0, 0.0, 0.0));
     }
     if(glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
     {
-        cube->Move(glm::vec3(0.0, 0.0, -1.0));
+        player->Move(glm::vec3(0.0, 0.0, -1.0));
     }
 
     // Debug Movement for moving the camera

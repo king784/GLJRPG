@@ -53,30 +53,48 @@ public:
 	{
 		this->position = glm::vec3(0.0);
 		this->scale = glm::vec3(1.0);
-		this->model = glm::mat4(1.0f);
+		this->model = glm::mat4(1.0);
 		this->textureID = textureID;
 		Initialize();
 	}
 
-	void Draw(Shader shader)
+	void Draw(Shader& shader)
 	{
-		glBindVertexArray(this->VAO);
+		shader.Use();
+		shader.SetMat4("model", model);
 		glBindTexture(GL_TEXTURE_2D, textureID);
-		glDrawArrays(GL_TRIANGLES, 0, 6);
+
+		glBindVertexArray(this->VAO);
+		
+    	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 	}
 
 private:
 	unsigned int EBO;
-	float vertices[24] = {
-		// positions   // texCoords
-		-1.0f,  1.0f,  0.0f, 1.0f,
-		-1.0f, -1.0f,  0.0f, 0.0f,
-		 1.0f, -1.0f,  1.0f, 0.0f,
+	// float vertices[24] = {
+	// 	// positions   // texCoords
+	// 	-1.0f,  1.0f,  0.0f, 1.0f,
+	// 	-1.0f, -1.0f,  0.0f, 0.0f,
+	// 	 1.0f, -1.0f,  1.0f, 0.0f,
 
-		-1.0f,  1.0f,  0.0f, 1.0f,
-		 1.0f, -1.0f,  1.0f, 0.0f,
-		 1.0f,  1.0f,  1.0f, 1.0f
-	};
+	// 	-1.0f,  1.0f,  0.0f, 1.0f,
+	// 	 1.0f, -1.0f,  1.0f, 0.0f,
+	// 	 1.0f,  1.0f,  1.0f, 1.0f
+	// };
+	float vertices[20] = 
+    {
+        // positions        // texture coords
+        1.0f,  1.0f, 0.0f, 1.0f, 1.0f,   // top right
+        1.0f, -1.0f, 0.0f, 1.0f, 0.0f,   // bottom right
+        -1.0f, -1.0f, 0.0f, 0.0f, 0.0f,   // bottom left
+        -1.0f,  1.0f, 0.0f, 0.0f, 1.0f    // top left 
+    };
+
+	unsigned int indices[6] = 
+    {  
+        0, 1, 3, // first triangle
+        1, 2, 3  // second triangle
+    };
 
 	void Initialize()
 	{
@@ -89,16 +107,21 @@ private:
 
 		glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
-		glEnableVertexAttribArray(0);
-		glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0);
-		glEnableVertexAttribArray(1);
-		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+    	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
+		glEnableVertexAttribArray(0);
+		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+		glEnableVertexAttribArray(1);
+
+		// Unbind
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
 		glBindVertexArray(0);
 
 		// Plane is stationary, set start pos
-		model = glm::translate(model, position);
-		model = glm::scale(model, scale);
+		// model = glm::translate(model, position);
+		// model = glm::scale(model, scale);
 	}
 };
 
@@ -148,7 +171,7 @@ public:
 		Rotate(glm::vec3(1.0, 0.0, 0.0), 90.0f);
 	}
 
-	void Draw(Shader shader)
+	void Draw(Shader& shader)
 	{
 		shader.SetMat4("model", model);
 		glBindTexture(GL_TEXTURE_2D, textureID);
