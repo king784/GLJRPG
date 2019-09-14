@@ -24,13 +24,14 @@ public:
     unsigned int ID;
   
     // Constructer reads and creates the shader
-    Model(const char* modelPath, const char* texturePath, glm::vec3 startPosition = glm::vec3(0.0, 0.0, 0.0), glm::vec3 startScale = glm::vec3(1.0));
+    Model(const char* modelPath, const char* texturePath, glm::vec3 startPosition = glm::vec3(0.0, 0.0, 0.0), 
+    glm::vec3 startScale = glm::vec3(1.0), Shader& theShader);
 
     // Destructor
     ~Model();
 
     // Use the shader
-    void Draw(Shader& shader);
+    void Draw();
 
     // Set position of model
     void SetPosition(glm::vec3 newPosition);
@@ -48,6 +49,8 @@ private:
 
     glm::vec3 position;
     glm::vec3 scale;
+
+    Shader& shader
     //std::vector<GLushort> indices;
 };
   
