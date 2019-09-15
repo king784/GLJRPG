@@ -24,8 +24,8 @@ public:
     unsigned int ID;
   
     // Constructer reads and creates the shader
-    Model(const char* modelPath, const char* texturePath, glm::vec3 startPosition = glm::vec3(0.0, 0.0, 0.0), 
-    glm::vec3 startScale = glm::vec3(1.0), Shader& theShader);
+    Model(const char* modelPath, const char* texturePath, Shader theShader, glm::vec3 startPosition = glm::vec3(0.0, 0.0, 0.0), 
+    glm::vec3 startScale = glm::vec3(1.0));
 
     // Destructor
     ~Model();
@@ -50,7 +50,7 @@ private:
     glm::vec3 position;
     glm::vec3 scale;
 
-    Shader& shader
+    Shader* shader;
     //std::vector<GLushort> indices;
 };
   

@@ -18,6 +18,7 @@ public:
     std::string shaderName;
   
     // Constructer reads and creates the shader
+    Shader(){};
     Shader(const char* vertexPath, const char* fragmentPath, std::string newShaderName);
     // Use the shader
     void Use();

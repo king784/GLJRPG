@@ -2,7 +2,7 @@
 
 #include "vboindexer.cpp"
 
-Model::Model(const char* modelPath, const char* texturePath, glm::vec3 startPosition, glm::vec3 startScale)
+Model::Model(const char* modelPath, const char* texturePath, Shader theShader, glm::vec3 startPosition, glm::vec3 startScale)
 {
     std::ifstream modelIStream;
 
@@ -108,6 +108,9 @@ Model::Model(const char* modelPath, const char* texturePath, glm::vec3 startPosi
 
         texture = new Texture(texturePath);
 
+        shader = new Shader();
+        *shader = theShader;
+
         position = startPosition;
         scale = startScale;
     }
@@ -122,18 +125,18 @@ Model::~Model()
     delete(texture);
 }
 
-void Model::Draw(Shader& shader)
+void Model::Draw()
 {
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, texture->GetID());
 
-    shader.Use();
-    shader.SetInt("myTexture", 0);
+    shader->Use();
+    shader->SetInt("myTexture", 0);
 
     glm::mat4 model = glm::mat4(1.0f);
     model = glm::translate(model, position);
     model = glm::scale(model, scale);
-    shader.SetMat4("model", model);
+    shader->SetMat4("model", model);
 
     glBindVertexArray(VAO);
 
