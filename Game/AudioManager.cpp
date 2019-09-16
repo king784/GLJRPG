@@ -48,9 +48,10 @@ void Audiomanager::StartAudioManager()
     // Create source
     CreateSource();
     
-    char path[] = "D:/Projects/OpenGL/GLJRPG/Game/Sounds/Music/alenarag.wav";
+    char path[] = "C:/Users/teemu.turku/Documents/GitHub/GLJRPG/Sounds/Music/alenarag.wav";
     // Load wav data
     alutLoadWAVFile((ALbyte*)path, &bgMusic.format, &bgMusic.data, &bgMusic.size, &bgMusic.frequency, &bgMusic.loop);
+    // buffer = alutCreateBufferFromFile(path);
     // bgMusic.data = LoadWav("C:/Users/teemu.turku/Documents/GitHub/GLJRPG/Game/Sounds/Music/alenarag.wav", 
     // bgMusic.channel, bgMusic.sampleRate, bgMusic.bps, bgMusic.size);
 
@@ -61,6 +62,9 @@ void Audiomanager::StartAudioManager()
 
     alBufferData(buffer, bgMusic.format, bgMusic.data, bgMusic.size, bgMusic.frequency);
     CheckForErrors();
+
+    // free memory used by data
+    alutUnloadWAV(bgMusic.format, bgMusic.data, bgMusic.size, bgMusic.frequency);
 
     alSourcei(source, AL_BUFFER, buffer);
     // Play the source
@@ -92,6 +96,12 @@ void Audiomanager::GetAudioDevices(const ALCchar* devices)
         next += (len + 2);
     }
     std::cout << "------------" << std::endl;
+}
+
+ALint Audiomanager::GetSourceState()
+{
+    alGetSourcei(source, AL_SOURCE_STATE, &source_state);
+    return source_state;
 }
 
 void Audiomanager::SetListenerPoint(const ALfloat* newPoint)

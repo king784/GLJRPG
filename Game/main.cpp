@@ -62,7 +62,7 @@ int main()
 
     // Path at school: C:/Users/teemu.turku/Documents/GitHub/GLJRPG
     // at home: D:/Projects/OpenGL/GLJRPG
-    std::string pathToRoot = "D:/Projects/OpenGL/GLJRPG"; 
+    std::string pathToRoot = "C:/Users/teemu.turku/Documents/GitHub/GLJRPG"; 
 
     // Shaders
     Shader backgroundShader((pathToRoot + "/Game/Shaders/Background.vs").c_str(), (pathToRoot + "/Game/Shaders/Background.fs").c_str(), "backgroundShader");
@@ -76,7 +76,7 @@ int main()
     ScreenQuad bg(bgTexture.GetID());
     // Player
     player = new Model((pathToRoot + "/Game/Models/hugi/Hugis.obj").c_str(), (pathToRoot + "/Game/Models/Cube/Colors.png").c_str(), 
-    unlitShader, glm::vec3(4.0, 0.0, 1.0), glm::vec3(0.005));
+    unlitShader, glm::vec3(4.0, -1.0, 1.0), glm::vec3(0.005));
 
     Model barrel((pathToRoot + "/Game/Models/Barrel/barrel.obj").c_str(), (pathToRoot + "/Game/Models/Barrel/barrel.png").c_str(), 
     unlitShader, glm::vec3(8.0, -0.5, 3.0), glm::vec3(0.5));
@@ -89,7 +89,7 @@ int main()
     glEnable(GL_DEPTH_TEST);
 
     // Audio
-    Audiomanager::GetInstance().StartAudioManager();
+    // Audiomanager::GetInstance().StartAudioManager();
 
     // Main loop
     while(!glfwWindowShouldClose(window))

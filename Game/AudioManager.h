@@ -48,6 +48,7 @@ public:
 	};
     void StartAudioManager();
     void GetAudioDevices(const ALCchar* devices);
+    ALint GetSourceState();
     void SetListenerPoint(const ALfloat* newPoint);
     void CreateSource();
     char* LoadWav(const char* fn, int& chan, int& samplerate, int& bps, int& size);
@@ -61,6 +62,7 @@ private:
     ALuint source;
     ALuint buffer;
     Sound bgMusic;
+    ALint source_state;
 };
 
 #endif

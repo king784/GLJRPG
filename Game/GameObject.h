@@ -110,18 +110,17 @@ private:
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
     	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
 		glEnableVertexAttribArray(0);
-		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
 		glEnableVertexAttribArray(1);
+		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
 
 		// Unbind
-		glBindBuffer(GL_ARRAY_BUFFER, 0);
 		glBindVertexArray(0);
 
 		// Plane is stationary, set start pos
-		// model = glm::translate(model, position);
-		// model = glm::scale(model, scale);
+		model = glm::translate(model, position);
+		model = glm::scale(model, scale);
 	}
 };
 
