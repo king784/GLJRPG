@@ -81,7 +81,7 @@ int main()
     Model barrel((pathToRoot + "/Game/Models/Barrel/barrel.obj").c_str(), (pathToRoot + "/Game/Models/Barrel/barrel.png").c_str(), 
     unlitShader, glm::vec3(8.0, -0.5, 3.0), glm::vec3(0.5));
 
-    Cube maskBoxCube(glm::vec3(7.5, 0.0, 2.0), glm::vec3(1.5));
+    Cube maskBoxCube(glm::vec3(9.5, 0.0, 2.0), glm::vec3(1.5));
 
     // Path to box: "/Game/Models/Cube/box.png"
 

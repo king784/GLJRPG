@@ -51,6 +51,8 @@ private:
     glm::vec3 scale;
 
     Shader* shader;
+
+    glm::mat4 model = glm::mat4(1.0f);
     //std::vector<GLushort> indices;
 };
   

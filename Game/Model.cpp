@@ -133,7 +133,7 @@ void Model::Draw()
     shader->Use();
     shader->SetInt("myTexture", 0);
 
-    glm::mat4 model = glm::mat4(1.0f);
+    model = glm::mat4(1.0f);
     model = glm::translate(model, position);
     model = glm::scale(model, scale);
     shader->SetMat4("model", model);

@@ -14,13 +14,13 @@
 
 struct Sound
 {
-    int channel;
-    int sampleRate;
-    int bps;
-    ALsizei size, frequency;
-    ALenum format;
+    int channel = 0;
+    int sampleRate = 0;
+    int bps = 0;
+    ALsizei size = 0, frequency = 0;
+    ALenum format = AL_FORMAT_MONO8;
     char* pathToSound;
-    ALvoid* data;
+    ALvoid* data = NULL;
     ALboolean loop = AL_FALSE;
 };
 
@@ -56,13 +56,13 @@ public:
     void CheckForErrors();
 
 private:
-    ALCdevice* audioDevice;
-    ALCcontext* context;
+    ALCdevice* audioDevice = NULL;
+    ALCcontext* context = NULL;
     ALfloat listenerPoint[3];
-    ALuint source;
-    ALuint buffer;
+    ALuint source = 0;
+    ALuint buffer = 0;
     Sound bgMusic;
-    ALint source_state;
+    ALint source_state = 0;
 };
 
 #endif

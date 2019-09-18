@@ -3,6 +3,7 @@
 
 #include "Shader.h"
 #include "Texture.h"
+#include "Collider.h"
 
 #include "stb_image.h"
 
@@ -22,6 +23,7 @@ public:
 	glm::vec3 scale;
 	glm::mat4 model;
 	unsigned int textureID;
+	
 
 	GameObject() 
 	{
