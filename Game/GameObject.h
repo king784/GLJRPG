@@ -23,8 +23,8 @@ public:
 	glm::vec3 scale;
 	glm::mat4 model;
 	unsigned int textureID;
+	Collider* collider;
 	
-
 	GameObject() 
 	{
 		this->position = glm::vec3(0.0);
@@ -32,6 +32,7 @@ public:
 		this->model = glm::mat4(1.0f);
 		Initialize();
 	}
+
 	GameObject(glm::vec3 position, glm::vec3 scale)
 	{
 		this->position = position;
@@ -39,10 +40,17 @@ public:
 		this->model = glm::mat4(1.0f);
 		Initialize();
 	}
+
 	void Rotate(glm::vec3 axis, float angle)
 	{
 		this->model = glm::rotate(model, glm::radians(angle), axis);
 	}
+
+	void AddCollider()
+	{
+		collider = new Collider();
+	}
+
 	virtual void Initialize() {}
 private:
 	virtual void Draw() {}
