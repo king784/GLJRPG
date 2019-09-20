@@ -16,6 +16,7 @@
 #include "Texture.h"
 #include "Structs.h"  
 #include "Enums.h"
+#include "Collider.h"
 
 class Model
 {
@@ -25,7 +26,7 @@ public:
   
     // Constructer reads and creates the shader
     Model(const char* modelPath, const char* texturePath, Shader theShader, glm::vec3 startPosition = glm::vec3(0.0, 0.0, 0.0), 
-    glm::vec3 startScale = glm::vec3(1.0));
+    glm::vec3 startScale = glm::vec3(1.0), bool hasCol = false);
 
     // Destructor
     ~Model();
@@ -51,6 +52,7 @@ private:
     glm::vec3 scale;
 
     Shader* shader;
+    Collider* collider;
 
     glm::mat4 model = glm::mat4(1.0f);
     //std::vector<GLushort> indices;

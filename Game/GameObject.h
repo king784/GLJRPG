@@ -46,10 +46,7 @@ public:
 		this->model = glm::rotate(model, glm::radians(angle), axis);
 	}
 
-	void AddCollider()
-	{
-		collider = new Collider();
-	}
+	virtual void AddCollider() {}
 
 	virtual void Initialize() {}
 private:

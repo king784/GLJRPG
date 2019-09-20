@@ -2,7 +2,7 @@
 
 #include "vboindexer.cpp"
 
-Model::Model(const char* modelPath, const char* texturePath, Shader theShader, glm::vec3 startPosition, glm::vec3 startScale)
+Model::Model(const char* modelPath, const char* texturePath, Shader theShader, glm::vec3 startPosition, glm::vec3 startScale, bool hasCol)
 {
     std::ifstream modelIStream;
 
@@ -72,9 +72,54 @@ Model::Model(const char* modelPath, const char* texturePath, Shader theShader, g
         }
         modelIStream.close();
 
+        glm::vec3 maxVec;
+        glm::vec3 minVec;
+
         for(int i = 0; i < vertexIndices.size(); i++)
         {
             vertices.push_back(Vertex(verticesPos[i], normals[i], texCoords[i]));
+            
+            // Get the max and min values for generating the box collider around the model
+            if(verticesPos[i].x > maxVec.x)
+            {
+                maxVec.x = verticesPos[i].x;
+            }
+            if(verticesPos[i].y > maxVec.y)
+            {
+                maxVec.y = verticesPos[i].y;
+            }
+            if(verticesPos[i].z > maxVec.z)
+            {
+                maxVec.z = verticesPos[i].z;
+            }
+
+            if(verticesPos[i].x < minVec.x)
+            {
+                minVec.x = verticesPos[i].x;
+            }
+            if(verticesPos[i].y < minVec.y)
+            {
+                minVec.y = verticesPos[i].y;
+            }
+            if(verticesPos[i].z < minVec.z)
+            {
+                minVec.z = verticesPos[i].z;
+            }
+        }
+
+        if(hasCol)
+        {
+            float colliderVertices[24] = {
+                maxVec.x, maxVec.y, maxVec.z,
+                maxVec.x, maxVec.y, minVec.z,
+                maxVec.x, minVec.y, maxVec.z,
+                maxVec.x, minVec.y, minVec.z,
+                minVec.x, maxVec.y, maxVec.z,
+                minVec.x, maxVec.y, minVec.z,
+                minVec.x, minVec.y, maxVec.z,
+                minVec.x, minVec.y, minVec.z
+            };
+            collider = new Collider(colliderVertices);
         }
 
         glGenVertexArrays(1, &VAO);
@@ -123,6 +168,8 @@ Model::Model(const char* modelPath, const char* texturePath, Shader theShader, g
 Model::~Model()
 {
     delete(texture);
+    delete(shader);
+    delete(collider);
 }
 
 void Model::Draw()

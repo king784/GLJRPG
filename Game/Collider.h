@@ -1,22 +1,28 @@
 #ifndef COLLIDER_H
 #define COLLIDER_H
 
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
+
 class Collider
 {
 public:
-    Collider();
+    Collider(const float newVertices[24]);
+
+    void SetPosition(glm::vec3 newPosition);
 
 private:
-    float newVertices[24] = 
+    float colVertices[24] = 
     {
-	0.5f, 0.5f, 0.5f,  
-	0.5f, 0.5f, -0.5f, 
-	0.5f,  -0.5f, 0.5f,  
-	0.5f,  -0.5f, -0.5f,  
-   -0.5f, 0.5f, 0.5f,  
-   -0.5f,  0.5f, -0.5f,
-   -0.5f, -0.5f,  0.5f,
-	-0.5f, -0.5f,  -0.5f
+	1.0f, 1.0f, 1.0f,  
+	1.0f, 1.0f, -1.0f, 
+	1.0f,  -1.0f, 1.0f,  
+	1.0f,  -1.0f, -1.0f,  
+   -1.0f, 1.0f, 1.0f,  
+   -1.0f,  1.0f, -1.0f,
+   -1.0f, -1.0f,  1.0f,
+	-1.0f, -1.0f,  -1.0f
    };
 };
 
