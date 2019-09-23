@@ -7,3 +7,8 @@ Collider::Collider(const float newVertices[24])
         colVertices[i] = newVertices[i];
     }
 }
+
+void Collider::SetPosition(glm::vec3 newPosition)
+{
+    
+}
