@@ -18,6 +18,10 @@
 #include "Enums.h"
 #include "Collider.h"
 
+class Collider;
+class Shader;
+class Texture;
+
 class Model
 {
 public:

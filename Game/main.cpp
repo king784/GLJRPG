@@ -23,11 +23,10 @@
 const unsigned int SCREENWIDTH = 800;
 const unsigned int SCREENHEIGHT = 600;
 Camera mainCamera(SCREENWIDTH, SCREENHEIGHT, glm::vec3(2.0, 2.0, 5.0), -10.0f, 5.0f);
-Model* player;
 
 // Function prototypes
 void FramebufferSizeCallback(GLFWwindow* window, int width, int height);
-void ProcessInput(GLFWwindow* window);
+void ProcessInput(GLFWwindow* window, Model& player);
 
 int main()
 {
@@ -66,7 +65,7 @@ int main()
 
     // Shaders
     Shader backgroundShader((pathToRoot + "/Game/Shaders/Background.vs").c_str(), (pathToRoot + "/Game/Shaders/Background.fs").c_str(), "backgroundShader");
-    Shader unlitShader((pathToRoot + "/Game/Shaders/Unlit.vs").c_str(), (pathToRoot + "/Game/Shaders/Unlit.fs").c_str(), "unlitShader");
+    Shader unlitShader((pathToRoot + "/Game/Shaders/Unlit.vs").c_str(), (pathToRoot + "/Game/Shaders/Unlit.fs").c_str(), "Unlit");
     Shader colorNShader((pathToRoot + "/Game/Shaders/ColorN.vs").c_str(), (pathToRoot + "/Game/Shaders/ColorN.fs").c_str(), "colorNShader");
 
     // Textures
@@ -74,12 +73,13 @@ int main()
 
     // Models
     ScreenQuad bg(bgTexture.GetID());
+
     // Player
-    player = new Model((pathToRoot + "/Game/Models/hugi/Hugis.obj").c_str(), (pathToRoot + "/Game/Models/Cube/Colors.png").c_str(), 
-    unlitShader, glm::vec3(4.0, -1.0, 1.0), glm::vec3(0.005));
+    Model player((pathToRoot + "/Game/Models/hugi/Hugis.obj").c_str(), (pathToRoot + "/Game/Models/Cube/Colors.png").c_str(), 
+    unlitShader, glm::vec3(4.0, -1.0, 1.0), glm::vec3(0.005), false);
 
     Model barrel((pathToRoot + "/Game/Models/Barrel/barrel.obj").c_str(), (pathToRoot + "/Game/Models/Barrel/barrel.png").c_str(), 
-    unlitShader, glm::vec3(8.0, -0.5, 3.0), glm::vec3(0.5));
+    unlitShader, glm::vec3(8.0, -0.5, 3.0), glm::vec3(0.5), false);
 
     Cube maskBoxCube(glm::vec3(9.5, 0.0, 2.0), glm::vec3(1.5));
 
@@ -95,7 +95,7 @@ int main()
     while(!glfwWindowShouldClose(window))
     {
         // Process inputs
-        ProcessInput(window);
+        ProcessInput(window, player);
 
         // Rendering
         glClearColor(0.1f, 0.35f, 0.2f, 1.0f);
@@ -132,7 +132,7 @@ int main()
 
         unlitShader.SetMat4("view", mainCamera.GetView());
         unlitShader.SetMat4("projection", mainCamera.GetProjection());
-        player->Draw();
+        player.Draw();
         //glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
         barrel.Draw();
@@ -146,7 +146,7 @@ int main()
     // glDeleteVertexArrays(1, &VAO);
     // glDeleteBuffers(1, &VBO);
     // glDeleteBuffers(1, &EBO);
-    delete player;
+    // delete player;
 
     // Clean GLFW resources that were allocated.
     glfwTerminate();
@@ -160,7 +160,7 @@ void FramebufferSizeCallback(GLFWwindow* window, int width, int height)
     glViewport(0, 0, width, height);
 }
 // Input
-void ProcessInput(GLFWwindow* window)  
+void ProcessInput(GLFWwindow* window, Model& player)  
 {
     // Escape key to close window
     if(glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
@@ -171,19 +171,19 @@ void ProcessInput(GLFWwindow* window)
     // Move player
     if(glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
     {
-        player->Move(glm::vec3(1.0, 0.0, 0.0));
+        player.Move(glm::vec3(1.0, 0.0, 0.0));
     }
     if(glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
     {
-        player->Move(glm::vec3(0.0, 0.0, 1.0));
+        player.Move(glm::vec3(0.0, 0.0, 1.0));
     }
     if(glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
     {
-        player->Move(glm::vec3(-1.0, 0.0, 0.0));
+        player.Move(glm::vec3(-1.0, 0.0, 0.0));
     }
     if(glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
     {
-        player->Move(glm::vec3(0.0, 0.0, -1.0));
+        player.Move(glm::vec3(0.0, 0.0, -1.0));
     }
 
     // Debug Movement for moving the camera
