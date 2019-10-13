@@ -172,18 +172,22 @@ void ProcessInput(GLFWwindow* window, Model& player)
     if(glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
     {
         player.Move(glm::vec3(1.0, 0.0, 0.0));
+        player.Rotate(90.0f);
     }
     if(glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
     {
         player.Move(glm::vec3(0.0, 0.0, 1.0));
+        player.Rotate(0.0f);
     }
     if(glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
     {
         player.Move(glm::vec3(-1.0, 0.0, 0.0));
+        player.Rotate(200.0f);
     }
     if(glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
     {
         player.Move(glm::vec3(0.0, 0.0, -1.0));
+        player.Rotate(180.0f);
     }
 
     // Debug Movement for moving the camera

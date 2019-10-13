@@ -183,6 +183,10 @@ void Model::Draw()
     model = glm::mat4(1.0f);
     model = glm::translate(model, position);
     model = glm::scale(model, scale);
+    if(needToRotate)
+    {
+        model = glm::rotate(model, desiredRot, glm::vec3(0.0f, 1.0f, 0.0f));
+    } 
     shader->SetMat4("model", model);
 
     glBindVertexArray(VAO);
@@ -202,4 +206,14 @@ void Model::SetPosition(glm::vec3 newPosition)
 void Model::Move(glm::vec3 direction, float speed)
 {
     position += glm::normalize(direction) * speed;
+}
+
+void Model::Rotate(float newAngle)
+{
+    if(newAngle != lastGivenAngle)
+    {
+        needToRotate = true;
+        desiredRot = newAngle;
+    }
+    lastGivenAngle = newAngle;
 }

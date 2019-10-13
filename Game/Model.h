@@ -42,6 +42,8 @@ public:
     void SetPosition(glm::vec3 newPosition);
 
     void Move(glm::vec3 direction, float speed = 0.1f);
+
+    void Rotate(float newAngle);
 private:
     unsigned int VBO, VAO, EBO;
     std::vector<Vertex> vertices;
@@ -59,6 +61,10 @@ private:
     Collider* collider;
 
     glm::mat4 model = glm::mat4(1.0f);
+    float currentRot = 0.0f;
+    float lastGivenAngle = 0.0f;
+    float desiredRot;
+    bool needToRotate = false;
     //std::vector<GLushort> indices;
 };
   
