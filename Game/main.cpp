@@ -27,9 +27,13 @@ Camera mainCamera(SCREENWIDTH, SCREENHEIGHT, glm::vec3(2.0, 2.0, 5.0), -10.0f, 5
 // Function prototypes
 void FramebufferSizeCallback(GLFWwindow* window, int width, int height);
 void ProcessInput(GLFWwindow* window, Model& player);
+void ErrorCallback(int error, const char* description);
 
 int main()
 {
+    // Set error callback
+    glfwSetErrorCallback(ErrorCallback);
+
     // Initialize GLFW and configure
     glfwInit();
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
@@ -224,4 +228,9 @@ void ProcessInput(GLFWwindow* window, Model& player)
     {
         mainCamera.RotateCamera(Direction::Back);
     }
+}
+
+void ErrorCallback(int error, const char* description)
+{
+    std::cout << "Error callback called! Here is what happened: " << description << std::endl;
 }
