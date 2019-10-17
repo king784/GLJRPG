@@ -48,7 +48,7 @@ void Audiomanager::StartAudioManager()
     // Create source
     CreateSource();
     
-    char path[] = "D:/Projects/OpenGL/GLJRPG/Sounds/Music/alenarag.wav";
+    char path[] = "C:/Users/teemu.turku/Documents/GitHub/GLJRPG/Sounds/Music/alenarag.wav";
     // Load wav data
     alutLoadWAVFile((ALbyte*)path, &bgMusic.format, &bgMusic.data, &bgMusic.size, &bgMusic.frequency, &bgMusic.loop);
     // buffer = alutCreateBufferFromFile(path);

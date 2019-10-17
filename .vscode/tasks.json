@@ -14,7 +14,7 @@
         {
             "type": "shell",
             "label": "g++.exe build active file",
-            "command": "D:/MinGW/bin/g++.exe",
+            "command": "C:/MinGW/bin/g++.exe",
             "args": [
                 "-g",
                 "${file}",
@@ -35,7 +35,7 @@
                 "${fileDirname}\\${fileBasenameNoExtension}.exe"
             ],
             "options": {
-                "cwd": "D:/MinGW/bin"
+                "cwd": "C:/MinGW/bin"
             }
         }
     ]
