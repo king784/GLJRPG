@@ -169,7 +169,7 @@ Model::~Model()
 {
     delete(texture);
     delete(shader);
-    delete(collider);
+    // delete(collider);
 }
 
 void Model::Draw()

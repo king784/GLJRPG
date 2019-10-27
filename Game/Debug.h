@@ -1,21 +1,49 @@
 #ifndef DEBUG_H
 #define DEBUG_H
 
-const unsigned int MAX_PATH = 256;
+const unsigned int MAXPATH = 256;
 
 #include <string>
+#include <chrono>
+#include <iostream>
 
 class Debug
 {
-    static char* ExePath() 
+public:
+    // Singleton
+	static Debug& GetInstance()
+	{
+		static Debug instance;
+		return instance;
+	};
+
+    void StartTimer()
     {
-        // char currentDirPath[MAX_PATH];
-        // int bytes = GetModuleFileNameW(NULL, currentDirPath, MAX_PATH);
-        // if(bytes == 0)
-        //     return;
-        // else
-        //     return currentDirPath;
+        start = std::chrono::high_resolution_clock::now();
     }
+
+    void EndTimer()
+    {
+        finish = std::chrono::high_resolution_clock::now();
+    }
+
+    void PrintTime()
+    {
+        std::chrono::duration<double> elapsed = finish - start;
+        std::cout << "Elapsed time: " << elapsed.count() << std::endl;
+    }
+
+    // static char* ExePath() 
+    // {
+    //     char currentDirPath[MAX_PATH];
+    //     int bytes = GetModuleFileNameW(NULL, currentDirPath, MAX_PATH);
+    //     if(bytes == 0)
+    //         return;
+    //     else
+    //         return currentDirPath;
+    // }
+
+    std::chrono::time_point<std::chrono::high_resolution_clock> start, finish;
 };
   
 #endif

@@ -18,6 +18,7 @@
 #include "Texture.h"
 #include "Enums.h"
 #include "AudioManager.h"
+#include "Debug.h"
 
 // Global variables
 const unsigned int SCREENWIDTH = 800;
@@ -31,6 +32,7 @@ void ErrorCallback(int error, const char* description);
 
 int main()
 {
+    Debug::GetInstance().StartTimer();
     // Set error callback
     glfwSetErrorCallback(ErrorCallback);
 
@@ -65,7 +67,7 @@ int main()
 
     // Path at school: C:/Users/teemu.turku/Documents/GitHub/GLJRPG
     // at home: D:/Projects/OpenGL/GLJRPG
-    std::string pathToRoot = "C:/Users/teemu.turku/Documents/GitHub/GLJRPG"; 
+    std::string pathToRoot = "D:/Projects/OpenGL/GLJRPG"; 
 
     // Shaders
     Shader backgroundShader((pathToRoot + "/Game/Shaders/Background.vs").c_str(), (pathToRoot + "/Game/Shaders/Background.fs").c_str(), "backgroundShader");
@@ -94,6 +96,9 @@ int main()
 
     // Audio
     // Audiomanager::GetInstance().StartAudioManager();
+
+    Debug::GetInstance().EndTimer();
+    Debug::GetInstance().PrintTime();
 
     // Main loop
     while(!glfwWindowShouldClose(window))
