@@ -9,6 +9,9 @@ Model::Model(const char* modelPath, const char* texturePath, Shader theShader, g
     // Ensure ifstream objects can throw exceptions.
     // This causes crash here because the while loop is expected to run to the end and "fail".
     // modelIStream.exceptions(std::ifstream::failbit | std::ifstream::badbit);
+
+    float* textureArray;
+    float* normalsArray;
     
     try 
     {
@@ -54,30 +57,58 @@ Model::Model(const char* modelPath, const char* texturePath, Shader theShader, g
             // range[1, 8] in obj files but OpenGL expects it to be range[0, 7].
             else if (line.substr(0,2) == "f ")
             {
-                std::istringstream s(line.substr(2));
-                unsigned int a, b, c;
-                for(int i = 0; i < 3; i++)
-                {
-                    s >> a;
-                    s.ignore(1); 
-                    s >> b; 
-                    s.ignore(1);
-                    s >> c;
-                    a--;
-                    b--;
-                    c--;
-                    vertexIndices.push_back(a); uvIndices.push_back(b); normalIndices.push_back(c);
-                }
+                textureArray = new float[verticesPos.size()*2];
+                normalsArray = new float[verticesPos.size()*3];
+                break;
+                // std::istringstream s(line.substr(2));
+                // unsigned int a, b, c;
+                // for(int i = 0; i < 3; i++)
+                // {
+                //     s >> a;
+                //     s.ignore(1); 
+                //     s >> b; 
+                //     s.ignore(1);
+                //     s >> c;
+                //     a--;
+                //     b--;
+                //     c--;
+                //     vertexIndices.push_back(a); uvIndices.push_back(b); normalIndices.push_back(c);
+                // }
             }
         }
+
+        while(getline(modelIStream, line))
+        {
+            if (line.substr(0,2) != "f ")
+            {
+                continue;
+            }
+
+            std::vector<std::string> currentLine = Split(line, ' ');
+            std::vector<std::string> vertex1 = Split(currentLine[1], '/');
+            std::vector<std::string> vertex2 = Split(currentLine[2], '/');
+            std::vector<std::string> vertex3 = Split(currentLine[3], '/');
+
+            ProcessVertex(vertex1, textureArray, normalsArray);
+            ProcessVertex(vertex2, textureArray, normalsArray);
+            ProcessVertex(vertex3, textureArray, normalsArray);
+        }
+
         modelIStream.close();
 
         glm::vec3 maxVec;
         glm::vec3 minVec;
 
+        for(int i = 0; i < verticesPos.size(); i++)
+        {
+            vertices[i].vertice = verticesPos[i];
+            vertices[i].normal = glm::vec3(normalsArray[i*3],normalsArray[i*3+1],normalsArray[i*3+2]);
+            vertices[i].texCoord = glm::vec2(textureArray[i*2],textureArray[i*2+1]);
+        }
+
         for(int i = 0; i < vertexIndices.size(); i++)
         {
-            vertices.push_back(Vertex(verticesPos[i], normals[i], texCoords[i]));
+            // vertices.push_back(Vertex(verticesPos[i], normals[i], texCoords[i]));
             
             // Get the max and min values for generating the box collider around the model
             if(verticesPos[i].x > maxVec.x)
@@ -170,6 +201,32 @@ Model::~Model()
     delete(texture);
     delete(shader);
     // delete(collider);
+}
+
+std::vector<std::string> Model::Split(std::string strToSplit, char delimeter)
+{
+    std::stringstream ss(strToSplit);
+    std::string item;
+    std::vector<std::string> splittedStrings;
+    while (std::getline(ss, item, delimeter))
+    {
+       splittedStrings.push_back(item);
+    }
+    return splittedStrings;
+}
+
+void Model::ProcessVertex(std::vector<std::string> vertexData, float* textureArray, float* normalsArray)
+{
+    int currentVertexPointer = std::stoi(vertexData[0]) - 1;
+    vertexIndices.push_back(currentVertexPointer);
+    glm::vec2 currentTexture = texCoords[std::stoi(vertexData[1]) - 1];
+    textureArray[currentVertexPointer*2] = currentTexture.x;
+    textureArray[currentVertexPointer*2+1] = 1 - currentTexture.y;
+    glm::vec3 currentNormal = normals[std::stoi(vertexData[2]) - 1];
+    normalsArray[currentVertexPointer*3] = currentNormal.x;
+    normalsArray[currentVertexPointer*3+1] = currentNormal.y;
+    normalsArray[currentVertexPointer*3+2] = currentNormal.z;
+    vertices.push_back(Vertex(verticesPos[currentVertexPointer], currentNormal, currentTexture));
 }
 
 void Model::Draw()

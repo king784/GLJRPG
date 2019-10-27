@@ -45,6 +45,9 @@ public:
 
     void Rotate(float newAngle);
 private:
+    void ProcessVertex(std::vector<std::string> vertexData,float* textureArray, float* normalsArray);
+    std::vector<std::string> Split(std::string strToSplit, char delimeter);
+
     unsigned int VBO, VAO, EBO;
     std::vector<Vertex> vertices;
     std::vector<glm::vec3> verticesPos;
