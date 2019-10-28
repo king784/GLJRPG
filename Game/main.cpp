@@ -42,7 +42,7 @@ int main()
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-    // Create the window and set width and height
+    // Create the window and set the width and height
     GLFWwindow* window = glfwCreateWindow(SCREENWIDTH, SCREENHEIGHT, "OpenGLRPG", NULL, NULL);
     if (window == NULL)
     {
@@ -52,7 +52,8 @@ int main()
     }
     glfwMakeContextCurrent(window);
 
-    // Initialize GLAD with OS-specific pointers so the glfwGetProcAddress defines the correct function based on which OS we're compiling for. 
+    // Initialize GLAD with OS-specific pointers so the glfwGetProcAddress defines the correct 
+    // function based on which OS we're compiling for. 
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
     {
         std::cout << "Failed to initialize GLAD" << std::endl;
