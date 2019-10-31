@@ -31,5 +31,24 @@ int main()
         std::cerr << "ERROR!! Vertex shader compilation failed!\n" << infoLog << std::endl;
     }
 
+    // Create shader program and assing the ID to the integer.
+    unsigned int shaderProgram;
+    shaderProgram = glCreateProgram();
+
+    // Attach and link shaders.
+    glAttachShader(shaderProgram, vertexShader);
+    glAttachShader(shaderProgram, fragmentShader);
+    glLinkProgram(shaderProgram);
+
+    // Check errors.
+    glGetProgramiv(shaderProgram, GL_LINK_STATUS, &success);
+    if(!success) {
+        glGetProgramInfoLog(shaderProgram, 512, NULL, infoLog);
+        std::cerr << "ERROR!! Shader program linking failed!\n" << infoLog << std::endl;
+    }
+
+    // Activate shader.
+    glUseProgram(shaderProgram);
+
     return 0;
 }
