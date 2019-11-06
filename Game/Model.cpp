@@ -203,6 +203,7 @@ Model::~Model()
     // delete(collider);
 }
 
+// Split string
 std::vector<std::string> Model::Split(std::string strToSplit, char delimeter)
 {
     std::stringstream ss(strToSplit);

@@ -55,6 +55,7 @@ int main()
     Model box((pathToRoot + "/Game/Models/Cube/box.obj").c_str(), (pathToRoot + "/Game/Models/Cube/TestBox.png").c_str(), 
     unlitShader, glm::vec3(15.0, 0.0, 5.0), glm::vec3(3.0), false);
 
+
     // Enable depth test
     glEnable(GL_DEPTH_TEST);
 
