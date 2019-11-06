@@ -8,6 +8,32 @@ float vertices[] = {
      0.0f,  0.5f, 0.0f  // Vertex 3
 }; 
 
+// VertexShader with text
+#version 460 core
+layout (location = 0) in vec3 aPos;
+layout (location = 1) in vec2 aTexCoord;
+
+out vec2 TexCoord;
+
+void main()
+{
+    gl_Position = vec4(aPos, 1.0);
+    TexCoord = aTexCoord;
+}
+
+// fragmentshader
+#version 460 core
+out vec4 FragColor;
+  
+in vec2 TexCoord;
+
+uniform sampler2D ourTexture;
+
+void main()
+{
+    FragColor = texture(ourTexture, TexCoord);
+}
+
 int main()
 {
     // For error checking
@@ -84,12 +110,14 @@ int main()
     glDrawArrays(GL_TRIANGLES, 0, 3);
 
     float vertices[] = 
-    { // Positions
-        0.5f,  0.5f, 0.0f,  // top right
-        0.5f, -0.5f, 0.0f,  // bottom right
-        -0.5f, -0.5f, 0.0f,  // bottom left
-        -0.5f,  0.5f, 0.0f   // top left 
+    {
+    // positions          // texture coords
+     0.5f,  0.5f, 0.0f,   1.0f, 1.0f,   // top right
+     0.5f, -0.5f, 0.0f,   1.0f, 0.0f,   // bottom right
+    -0.5f, -0.5f, 0.0f,   0.0f, 0.0f,   // bottom left
+    -0.5f,  0.5f, 0.0f,   0.0f, 1.0f    // top left 
     };
+
     unsigned int indices[] = 
     {
         // The order to draw the vertices
