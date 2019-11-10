@@ -92,12 +92,12 @@ void Camera::MoveCamera(Direction dir)
     view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
 }
 
-void Camera::RotateCamera(Direction dir)
+void Camera::RotateCamera(Direction dir, float speed)
 {
     switch (dir)
     {
     case Direction::Forward:
-        pitch += 1.0f;
+        pitch += 1.0f * speed;
         if(pitch > 89.0f)
         {
             pitch = 89.0f;
@@ -109,11 +109,11 @@ void Camera::RotateCamera(Direction dir)
         break;
 
     case Direction::Right:
-        yaw += 1.0f;
+        yaw += 1.0f * speed;
         break;
 
     case Direction::Back:
-        pitch -= 1.0f;
+        pitch -= 1.0f * speed;
         if(pitch > 89.0f)
         {
             pitch = 89.0f;
@@ -125,7 +125,7 @@ void Camera::RotateCamera(Direction dir)
         break;
 
     case Direction::Left:
-        yaw -= 1.0f;
+        yaw -= 1.0f * speed;
         break;
     
     default:

@@ -24,7 +24,7 @@ public:
 
     void SetCameraPos(glm::vec3 newPos);
     void MoveCamera(Direction dir);
-    void RotateCamera(Direction dir);
+    void RotateCamera(Direction dir, float speed = 1.0f);
 private:
     // Update camera vectors
     void UpdateVectors();

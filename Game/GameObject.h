@@ -331,6 +331,10 @@ public:
 
 	void Draw(Shader shader)
 	{
+		model = glm::mat4(1.0f);
+		model = glm::translate(model, position);
+		model = glm::scale(model, scale);
+		
 		shader.SetMat4("model", model);
 		glBindTexture(GL_TEXTURE_2D, textureID);
 		glActiveTexture(GL_TEXTURE0);
@@ -341,6 +345,10 @@ public:
 
 	void DrawWithoutTexture(Shader shader)
 	{
+		model = glm::mat4(1.0f);
+    	model = glm::translate(model, position);
+    	model = glm::scale(model, scale);
+
 		shader.SetMat4("model", model);
 
 		glBindVertexArray(this->VAO);

@@ -11,7 +11,7 @@
 // Global variables
 const unsigned int SCREENWIDTH = 800;
 const unsigned int SCREENHEIGHT = 600;
-Camera mainCamera(SCREENWIDTH, SCREENHEIGHT, glm::vec3(0.0, 5.0, 5.0), 0.0f, -10.0f);
+Camera mainCamera(SCREENWIDTH, SCREENHEIGHT, glm::vec3(0.0, 0.0, -10.0), -180.0f, 0.0f);
 
 // Function prototypes
 void FramebufferSizeCallback(GLFWwindow* window, int width, int height);
@@ -53,7 +53,7 @@ int main()
 
     Shader colorShader((pathToRoot + "/Game/Shaders/ColorShader.vs").c_str(), (pathToRoot + "/Game/Shaders/ColorShader.fs").c_str(), "Color");
 
-    Cube* cube = new Cube(glm::vec3(0.0f), glm::vec3(1.0f));
+    Cube* cube = new Cube(glm::vec3(0.0f, 0.0f, 10.0f), glm::vec3(3.0f));
 
 
     // Enable depth test
@@ -71,7 +71,7 @@ int main()
         colorShader.SetMat4("view", mainCamera.GetView());
         colorShader.SetMat4("projection", mainCamera.GetProjection());
         colorShader.SetVec3("myColor", glm::vec3(0.8f, 0.1f, 0.1f));
-        cube->Draw(colorShader);
+        cube->DrawWithoutTexture(colorShader);
 
         glfwSwapBuffers(window);
         glfwPollEvents();
@@ -115,11 +115,11 @@ void ProcessInput(GLFWwindow* window)
     // Rotating camera
     if(glfwGetKey(window, GLFW_KEY_O) == GLFW_PRESS)
     {
-        mainCamera.RotateCamera(Direction::Right);
+        mainCamera.RotateCamera(Direction::Right, 3.0f);
     }
     if(glfwGetKey(window, GLFW_KEY_U) == GLFW_PRESS)
     {
-        mainCamera.RotateCamera(Direction::Left);
+        mainCamera.RotateCamera(Direction::Left, 3.0f);
     }
     if(glfwGetKey(window, GLFW_KEY_Y) == GLFW_PRESS)
     {
