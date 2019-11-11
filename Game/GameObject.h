@@ -4,6 +4,7 @@
 #include "Shader.h"
 #include "Texture.h"
 #include "Collider.h"
+#include "Drawable.h"
 
 #include "stb_image.h"
 
@@ -53,22 +54,29 @@ private:
 	virtual void Draw() {}
 };
 
-class ScreenQuad : public GameObject
+class ScreenQuad : public GameObject, public Drawable
 {
 public:
-	ScreenQuad(unsigned int textureID)
+	ScreenQuad(unsigned int textureID, Shader theShader)
 	{
 		this->position = glm::vec3(0.0);
 		this->scale = glm::vec3(1.0);
 		this->model = glm::mat4(1.0);
 		this->textureID = textureID;
+		this->shader = new Shader();
+        *shader = theShader;
 		Initialize();
 	}
 
-	void Draw(Shader& shader)
+	~ScreenQuad()
 	{
-		shader.Use();
-		shader.SetMat4("model", model);
+		delete this->shader;
+	}
+
+	void Draw() override
+	{
+		shader->Use();
+		shader->SetMat4("model", model);
 		glBindTexture(GL_TEXTURE_2D, textureID);
 
 		glBindVertexArray(this->VAO);
@@ -77,6 +85,7 @@ public:
 	}
 
 private:
+	Shader* shader;
 	unsigned int EBO;
 	// float vertices[24] = {
 	// 	// positions   // texCoords

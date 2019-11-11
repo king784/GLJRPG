@@ -17,12 +17,13 @@
 #include "Structs.h"  
 #include "Enums.h"
 #include "Collider.h"
+#include "Drawable.h"
 
 class Collider;
 class Shader;
 class Texture;
 
-class Model
+class Model : public Drawable
 {
 public:
     // the program ID
@@ -36,7 +37,7 @@ public:
     ~Model();
 
     // Use the shader
-    void Draw();
+    void Draw() override;
 
     // Set position of model
     void SetPosition(glm::vec3 newPosition);

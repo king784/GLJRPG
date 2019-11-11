@@ -19,6 +19,7 @@
 #include "Enums.h"
 #include "AudioManager.h"
 #include "Debug.h"
+#include "Drawable.h"
 
 // Global variables
 const unsigned int SCREENWIDTH = 800;
@@ -68,7 +69,7 @@ int main()
 
     // Path at school: C:/Users/teemu.turku/Documents/GitHub/GLJRPG
     // at home: D:/Projects/OpenGL/GLJRPG
-    std::string pathToRoot = "C:/Users/teemu.turku/Documents/GitHub/GLJRPG"; 
+    std::string pathToRoot = "D:/Projects/OpenGL/GLJRPG"; 
 
     // Shaders
     Shader backgroundShader((pathToRoot + "/Game/Shaders/Background.vs").c_str(), (pathToRoot + "/Game/Shaders/Background.fs").c_str(), "backgroundShader");
@@ -79,13 +80,13 @@ int main()
     Texture bgTexture((pathToRoot + "/Game/Images/Background.png").c_str());
 
     // Models
-    ScreenQuad bg(bgTexture.GetID());
+    ScreenQuad bg(bgTexture.GetID(), backgroundShader);
 
     // Player
-    Model player((pathToRoot + "/Game/Models/hugi/Hugis.obj").c_str(), (pathToRoot + "/Game/Models/Cube/Colors.png").c_str(), 
+    Drawable* player = new Model((pathToRoot + "/Game/Models/hugi/Hugis.obj").c_str(), (pathToRoot + "/Game/Models/Cube/Colors.png").c_str(), 
     unlitShader, glm::vec3(4.0, -1.0, 1.0), glm::vec3(0.005), false);
 
-    Model barrel((pathToRoot + "/Game/Models/Barrel/barrel.obj").c_str(), (pathToRoot + "/Game/Models/Barrel/barrel.png").c_str(), 
+    Drawable* barrel = new Model((pathToRoot + "/Game/Models/Barrel/barrel.obj").c_str(), (pathToRoot + "/Game/Models/Barrel/barrel.png").c_str(), 
     unlitShader, glm::vec3(8.0, -0.5, 3.0), glm::vec3(0.5), false);
 
     Cube maskBoxCube(glm::vec3(9.5, 0.0, 2.0), glm::vec3(1.5));
@@ -101,18 +102,24 @@ int main()
     Debug::GetInstance().EndTimer();
     Debug::GetInstance().PrintTime();
 
+    // List of drawables
+    std::vector<Drawable*> drawables;
+    drawables.push_back(player);
+    drawables.push_back(barrel);
+
     // Main loop
     while(!glfwWindowShouldClose(window))
     {
         // Process inputs
-        ProcessInput(window, player);
+        Model* playerModel = dynamic_cast<Model*>(player);
+        ProcessInput(window, *playerModel);
 
         // Rendering
         glClearColor(0.1f, 0.35f, 0.2f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         // Draw background
-        bg.Draw(backgroundShader);
+        bg.Draw();
 
         // glBindTexture(GL_TEXTURE_2D, bgTexture.GetID());
 
@@ -134,6 +141,7 @@ int main()
         glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
 
         unlitShader.Use();
+
         // Create transformations
         //model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
 
@@ -142,10 +150,17 @@ int main()
 
         unlitShader.SetMat4("view", mainCamera.GetView());
         unlitShader.SetMat4("projection", mainCamera.GetProjection());
-        player.Draw();
+
+        // Loop for drawables
+        for(auto &it : drawables)
+        {
+            (it)->Draw();
+        }
+
+        // player.Draw();
         //glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
-        barrel.Draw();
+        // barrel.Draw();
 
         // Check and call events and swap buffers
         glfwSwapBuffers(window); 
