@@ -42,6 +42,8 @@ public:
     // Set position of model
     void SetPosition(glm::vec3 newPosition);
 
+    glm::vec3 GetPosition();
+
     void Move(glm::vec3 direction, float speed = 0.1f);
 
     void Rotate(float newAngle);

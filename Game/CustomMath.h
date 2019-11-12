@@ -21,6 +21,24 @@ static int ConvertToInt(char* buffer, int len)
     return a;
 }
 
+static bool IsGreaterVec3(glm::vec3 a, glm::vec3 b)
+{
+    if(a.x > b.x && a.y > b.y && a.z > b.z)
+    {
+        return true;
+    }
+    return false;
+}
+
+static bool IsLessVec3(glm::vec3 a, glm::vec3 b)
+{
+    if(a.x < b.x && a.y < b.y && a.z < b.z)
+    {
+        return true;
+    }
+    return false;
+}
+
 class Quaternion
 {
 public:

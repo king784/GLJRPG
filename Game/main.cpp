@@ -21,6 +21,7 @@
 #include "Debug.h"
 #include "Collider.h"
 #include "Drawable.h"
+#include "Event.h"
 
 // Global variables
 const unsigned int SCREENWIDTH = 800;
@@ -71,7 +72,7 @@ int main()
 
     // Path at school: C:/Users/teemu.turku/Documents/GitHub/GLJRPG
     // at home: D:/Projects/OpenGL/GLJRPG
-    std::string pathToRoot = "C:/Users/teemu.turku/Documents/GitHub/GLJRPG"; 
+    std::string pathToRoot = "D:/Projects/OpenGL/GLJRPG"; 
 
     // Shaders
     Shader backgroundShader((pathToRoot + "/Game/Shaders/Background.vs").c_str(), (pathToRoot + "/Game/Shaders/Background.fs").c_str(), "backgroundShader");
@@ -93,8 +94,6 @@ int main()
 
     Cube maskBoxCube(glm::vec3(9.5, 0.0, 2.0), glm::vec3(1.5));
 
-    Collider* eventCollider = new Collider(glm::vec3(-1.0f), glm::vec3(1.0f));
-
     // Path to box: "/Game/Models/Cube/box.png"
 
     // Enable depth test
@@ -111,6 +110,8 @@ int main()
     drawables.push_back(player);
     drawables.push_back(barrel);
 
+    Event talkEvent(glm::vec3(8.0, -0.5, 3.0));
+
     // Main loop
     while(!glfwWindowShouldClose(window))
     {
@@ -119,7 +120,11 @@ int main()
         ProcessInput(window, *playerModel);
         if(spacePressed)
         {
-
+            if(talkEvent.collider->CheckPoint(playerModel->GetPosition()))
+            {
+                std::cout << "yeeted" << std::endl;
+                talkEvent.DoEvent();
+            }
         }
 
         // Rendering

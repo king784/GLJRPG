@@ -33,6 +33,11 @@ public:
         std::cout << "Elapsed time: " << elapsed.count() << std::endl;
     }
 
+    static void Print(std::string text)
+    {
+        std::cout << text << std::endl;
+    }
+
     // static char* ExePath() 
     // {
     //     char currentDirPath[MAX_PATH];

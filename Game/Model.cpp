@@ -261,6 +261,11 @@ void Model::SetPosition(glm::vec3 newPosition)
     position = newPosition;
 }
 
+glm::vec3 Model::GetPosition()
+{
+    return position;
+}
+
 void Model::Move(glm::vec3 direction, float speed)
 {
     position += glm::normalize(direction) * speed;
