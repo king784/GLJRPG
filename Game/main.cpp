@@ -19,12 +19,14 @@
 #include "Enums.h"
 #include "AudioManager.h"
 #include "Debug.h"
+#include "Collider.h"
 #include "Drawable.h"
 
 // Global variables
 const unsigned int SCREENWIDTH = 800;
 const unsigned int SCREENHEIGHT = 600;
 Camera mainCamera(SCREENWIDTH, SCREENHEIGHT, glm::vec3(2.0, 2.0, 5.0), -10.0f, 5.0f);
+bool spacePressed = false;
 
 // Function prototypes
 void FramebufferSizeCallback(GLFWwindow* window, int width, int height);
@@ -69,7 +71,7 @@ int main()
 
     // Path at school: C:/Users/teemu.turku/Documents/GitHub/GLJRPG
     // at home: D:/Projects/OpenGL/GLJRPG
-    std::string pathToRoot = "D:/Projects/OpenGL/GLJRPG"; 
+    std::string pathToRoot = "C:/Users/teemu.turku/Documents/GitHub/GLJRPG"; 
 
     // Shaders
     Shader backgroundShader((pathToRoot + "/Game/Shaders/Background.vs").c_str(), (pathToRoot + "/Game/Shaders/Background.fs").c_str(), "backgroundShader");
@@ -91,13 +93,15 @@ int main()
 
     Cube maskBoxCube(glm::vec3(9.5, 0.0, 2.0), glm::vec3(1.5));
 
+    Collider* eventCollider = new Collider(glm::vec3(-1.0f), glm::vec3(1.0f));
+
     // Path to box: "/Game/Models/Cube/box.png"
 
     // Enable depth test
     glEnable(GL_DEPTH_TEST);
 
     // Audio
-    // Audiomanager::GetInstance().StartAudioManager();
+    Audiomanager::GetInstance().StartAudioManager();
 
     Debug::GetInstance().EndTimer();
     Debug::GetInstance().PrintTime();
@@ -113,6 +117,10 @@ int main()
         // Process inputs
         Model* playerModel = dynamic_cast<Model*>(player);
         ProcessInput(window, *playerModel);
+        if(spacePressed)
+        {
+
+        }
 
         // Rendering
         glClearColor(0.1f, 0.35f, 0.2f, 1.0f);
@@ -120,11 +128,6 @@ int main()
 
         // Draw background
         bg.Draw();
-
-        // glBindTexture(GL_TEXTURE_2D, bgTexture.GetID());
-
-        // glBindVertexArray(VAO);
-        // glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
         // Clear depth buffer so the background stays in the back, behind everything.
         glClear(GL_DEPTH_BUFFER_BIT);
@@ -141,13 +144,6 @@ int main()
         glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
 
         unlitShader.Use();
-
-        // Create transformations
-        //model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
-
-        //view  = glm::translate(view, glm::vec3(0.0f, -2.0f, 2.0f));
-        //projection = glm::perspective(glm::radians(45.0f), (float)SCREENWIDTH / (float)SCREENHEIGHT, 0.1f, 100.0f);
-
         unlitShader.SetMat4("view", mainCamera.GetView());
         unlitShader.SetMat4("projection", mainCamera.GetProjection());
 
@@ -157,21 +153,14 @@ int main()
             (it)->Draw();
         }
 
-        // player.Draw();
-        //glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-
-        // barrel.Draw();
-
         // Check and call events and swap buffers
         glfwSwapBuffers(window); 
         glfwPollEvents();   
     }
 
     // De-allocate resources
-    // glDeleteVertexArrays(1, &VAO);
-    // glDeleteBuffers(1, &VBO);
-    // glDeleteBuffers(1, &EBO);
-    // delete player;
+    delete barrel;
+    delete player;
 
     // Clean GLFW resources that were allocated.
     glfwTerminate();
@@ -191,6 +180,16 @@ void ProcessInput(GLFWwindow* window, Model& player)
     if(glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
     {
         glfwSetWindowShouldClose(window, true);
+    }
+
+    // Space key to interact
+    if(glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS && !spacePressed)
+    {
+        spacePressed = true;
+    }
+    if(glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_RELEASE && spacePressed)
+    {
+        spacePressed = false;
     }
 
     // Move player
