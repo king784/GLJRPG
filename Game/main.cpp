@@ -40,6 +40,7 @@ int main()
     // Set error callback
     glfwSetErrorCallback(ErrorCallback);
 
+    // WINDOW CREATION
     // Initialize GLFW and configure
     glfwInit();
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
@@ -55,6 +56,7 @@ int main()
         return -1;
     }
     glfwMakeContextCurrent(window);
+
 
     // Initialize GLAD with OS-specific pointers so the glfwGetProcAddress defines the correct 
     // function based on which OS we're compiling for. 

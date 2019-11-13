@@ -107,9 +107,7 @@ Model::Model(const char* modelPath, const char* texturePath, Shader theShader, g
         }
 
         for(int i = 0; i < vertexIndices.size(); i++)
-        {
-            // vertices.push_back(Vertex(verticesPos[i], normals[i], texCoords[i]));
-            
+        {   
             // Get the max and min values for generating the box collider around the model
             if(verticesPos[i].x > maxVec.x)
             {
