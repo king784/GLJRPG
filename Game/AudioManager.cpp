@@ -50,8 +50,12 @@ void Audiomanager::StartAudioManager()
     
     char path[] = "D:/Projects/OpenGL/GLJRPG/Game/Sounds/Music/alenarag.wav";
     // Load wav data
-    alutLoadWAVFile((ALbyte*)path, &bgMusic.format, &bgMusic.data, &bgMusic.size, &bgMusic.frequency, &bgMusic.loop);
-    // buffer = alutCreateBufferFromFile(path);
+	alutLoadMemoryFromFile(path, &bgMusic.format, &bgMusic.size, &bgMusic.frequency);
+	
+	// alutCreateBufferFromFile(path);
+
+	// alutLoadWAVFile((ALbyte*)path, &bgMusic.format, &bgMusic.data, &bgMusic.size, &bgMusic.frequency, &bgMusic.loop);
+	// buffer = alutCreateBufferFromFile(path);
     // bgMusic.data = LoadWav("C:/Users/teemu.turku/Documents/GitHub/GLJRPG/Game/Sounds/Music/alenarag.wav", 
     // bgMusic.channel, bgMusic.sampleRate, bgMusic.bps, bgMusic.size);
 
@@ -64,7 +68,7 @@ void Audiomanager::StartAudioManager()
     CheckForErrors();
 
     // free memory used by data
-    alutUnloadWAV(bgMusic.format, bgMusic.data, bgMusic.size, bgMusic.frequency);
+    // alutUnloadWAV(bgMusic.format, bgMusic.data, bgMusic.size, bgMusic.frequency);
 
     alSourcei(source, AL_BUFFER, buffer);
     // Play the source

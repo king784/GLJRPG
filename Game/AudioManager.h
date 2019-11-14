@@ -6,8 +6,6 @@
 #include <cstring>
 #include <string>
 
-#include <AL/al.h>
-#include <AL/alc.h>
 #include <AL/alut.h>
 
 #include "CustomMath.h"
@@ -17,7 +15,8 @@ struct Sound
     int channel = 0;
     int sampleRate = 0;
     int bps = 0;
-    ALsizei size = 0, frequency = 0;
+	ALsizei size = 0;
+	ALfloat frequency = 0.0f;
     ALenum format = AL_FORMAT_MONO8;
     char* pathToSound;
     ALvoid* data = NULL;
