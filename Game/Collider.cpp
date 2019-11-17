@@ -17,7 +17,6 @@ Collider::Collider(glm::vec3 newMin, glm::vec3 newMax)
 
 bool Collider::CheckPoint(glm::vec3 position)
 {
-    Debug::GetInstance().Print("checking");
     if(IsGreaterVec3(position, min) && IsLessVec3(position, max))
     {
         return true;

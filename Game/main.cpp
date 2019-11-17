@@ -91,10 +91,19 @@ int main()
     Drawable* player = new Model((pathToRoot + "/Game/Models/hugi/Hugis.obj").c_str(), (pathToRoot + "/Game/Models/Cube/Colors.png").c_str(), 
     unlitShader, glm::vec3(4.0, -1.0, 1.0), glm::vec3(0.005), false);
 
+    Drawable* heikki = new Model((pathToRoot + "/Game/Models/H2/Heikki.obj").c_str(), (pathToRoot + "/Game/Models/H2/Heikki.png").c_str(), 
+    unlitShader, glm::vec3(8.0, -0.5, 1.0), glm::vec3(1), false);
+
     Drawable* barrel = new Model((pathToRoot + "/Game/Models/Barrel/barrel.obj").c_str(), (pathToRoot + "/Game/Models/Barrel/barrel.png").c_str(), 
     unlitShader, glm::vec3(8.0, -0.5, 3.0), glm::vec3(0.5), false);
 
     Cube maskBoxCube(glm::vec3(9.5, 0.0, 2.0), glm::vec3(1.5));
+	
+	// List of drawables
+    std::vector<Drawable*> drawables;
+    drawables.push_back(player);
+    drawables.push_back(barrel);
+    drawables.push_back(heikki);
 
     // Path to box: "/Game/Models/Cube/box.png"
 
@@ -106,11 +115,6 @@ int main()
 
     Debug::GetInstance().EndTimer();
     Debug::GetInstance().PrintTime();
-
-    // List of drawables
-    std::vector<Drawable*> drawables;
-    drawables.push_back(player);
-    drawables.push_back(barrel);
 
     Event talkEvent(glm::vec3(8.0, -0.5, 3.0));
 
@@ -124,7 +128,7 @@ int main()
         {
             if(talkEvent.collider->CheckPoint(playerModel->GetPosition()))
             {
-                std::cout << "yeeted" << std::endl;
+                std::cout << "Inside trigger!." << std::endl;
                 talkEvent.DoEvent();
             }
         }
