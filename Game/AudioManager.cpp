@@ -51,6 +51,7 @@ void Audiomanager::StartAudioManager()
     char path[] = "D:/Projects/OpenGL/GLJRPG/Game/Sounds/Music/alenarag.wav";
     // Load wav data
 	alutLoadMemoryFromFile(path, &bgMusic.format, &bgMusic.size, &bgMusic.frequency);
+    std::cout << alGetError() << std::endl;
 	
 	// alutCreateBufferFromFile(path);
 
