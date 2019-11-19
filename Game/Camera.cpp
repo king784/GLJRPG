@@ -6,13 +6,13 @@ Camera::Camera(const int& screenWidth, const int& screenHeight, glm::vec3 startP
     // Positive z-axis goes towards the screen and towards you, so we want to move the camera that way.
     cameraPos = glm::vec3(0.0f, 0.0f, 3.0f);
 
-    // Get camera right vector by getting the cross product of worldUp and cameraDirection vectors
+    // World up vector
     worldUp = glm::vec3(0.0f, 1.0f, 0.0f);
 
     // Camera front
     cameraFront = glm::vec3(0.0, 0.0, -1.0f);
 
-    // Get camera right
+    // Get camera right vector by getting the cross product of worldUp and cameraDirection vectors
     cameraRight = glm::normalize(glm::cross(worldUp, cameraFront));
 
     // Get camera up vector
