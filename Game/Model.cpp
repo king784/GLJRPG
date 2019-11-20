@@ -34,7 +34,7 @@ Model::Model(const char* modelPath, const char* texturePath, Shader theShader, g
             else if(line.substr(0,3) == "vt ")
             {
                 std::istringstream s(line.substr(3));
-                glm::vec2 v; 
+                glm::vec2 v;
                 s >> v.x;
                 s >> v.y;
                 texCoords.push_back(v);
@@ -220,7 +220,7 @@ void Model::ProcessVertex(std::vector<std::string> vertexData, float* textureArr
     vertexIndices.push_back(currentVertexPointer);
     glm::vec2 currentTexture = texCoords[std::stoi(vertexData[1]) - 1];
     textureArray[currentVertexPointer*2] = currentTexture.x;
-    textureArray[currentVertexPointer*2+1] = 1 - currentTexture.y;
+    textureArray[currentVertexPointer*2+1] = currentTexture.y;
     glm::vec3 currentNormal = normals[std::stoi(vertexData[2]) - 1];
     normalsArray[currentVertexPointer*3] = currentNormal.x;
     normalsArray[currentVertexPointer*3+1] = currentNormal.y;
