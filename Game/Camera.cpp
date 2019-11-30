@@ -75,7 +75,7 @@ void Camera::MoveCamera(Direction dir)
         break;
 
     case Direction::Right:
-        cameraPos += glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
+        cameraPos += cameraRight * cameraSpeed;
         break;
 
     case Direction::Back:
@@ -83,7 +83,7 @@ void Camera::MoveCamera(Direction dir)
         break;
 
     case Direction::Left:
-        cameraPos -= glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
+        cameraPos -= cameraRight * cameraSpeed;
         break;
     
     default:
